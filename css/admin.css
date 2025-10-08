@@ -1,0 +1,141 @@
+/* admin.css - Estilo para painel administrativo Relíquias */
+
+body {
+  background: #f8f7f3;
+  color: #1a2238;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+}
+
+.admin-nav {
+  background: #1a2238;
+  padding: 0.5rem 0;
+  box-shadow: 0 2px 8px #1a22381a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.admin-nav ul {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0 2rem;
+}
+.admin-nav a {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 18px;
+  transition: background 0.2s, color 0.2s;
+  font-size: 1.05rem;
+}
+.admin-nav a.active,
+.admin-nav a:hover,
+.admin-nav a:focus {
+  background: linear-gradient(90deg, #c9a74a 60%, #e7d7a7 100%);
+  color: #1a2238;
+}
+
+#admin-content {
+  max-width: 1100px;
+  margin: 2.5rem auto 2rem auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px 0 rgba(201,167,74,0.10);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-height: 60vh;
+}
+
+.admin-section h2 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  color: #c9a74a;
+}
+
+.admin-section {
+  margin-bottom: 2.5rem;
+}
+
+/* Tabela de veículos */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: #f8f7f3;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #c9a74a22;
+}
+.admin-table th, .admin-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+}
+.admin-table th {
+  background: #e7d7a7;
+  color: #1a2238;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.admin-table tr {
+  border-bottom: 1px solid #ece6d6;
+}
+.admin-table tr:last-child {
+  border-bottom: none;
+}
+.admin-table td {
+  background: #fff;
+  color: #222;
+  font-size: 1rem;
+}
+
+/* Botão padrão admin (usa o mesmo universal do site) */
+.admin-section .botao-comprar {
+  max-width: 220px;
+  margin-bottom: 1.2rem;
+}
+
+/* Modal simples para formulário */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(26,34,56,0.18);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(201,167,74,0.18);
+  padding: 2.2rem 2rem 1.5rem 2rem;
+  min-width: 340px;
+  max-width: 98vw;
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  background: none;
+  border: none;
+  font-size: 1.7rem;
+  color: #c9a74a;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  #admin-content {
+    padding: 1.2rem 0.5rem;
+  }
+  .admin-nav ul {
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+  }
+  .admin-section h2 {
+    font-size: 1.3rem;
+  }
+}

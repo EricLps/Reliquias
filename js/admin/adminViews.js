@@ -1,0 +1,67 @@
+// adminViews.js - Componentes de interface para Admin Relíquias
+
+export function renderAdminVeiculos() {
+  return `
+    <section class="admin-section">
+      <h2>Gerenciar Veículos</h2>
+      <button class="admin-add-btn" id="btn-add-veiculo" title="Adicionar veículo">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:0.2em;"><circle cx="10" cy="10" r="9.2" stroke="#c9a74a" stroke-width="1.6" fill="none"/><path d="M10 6.2V13.8M6.2 10H13.8" stroke="#c9a74a" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <span style="font-size:1em; font-weight:400;">Adicionar</span>
+      </button>
+      <div id="admin-veiculos-lista">
+        <!-- Tabela de veículos será renderizada aqui -->
+      </div>
+      <div id="admin-veiculo-form-modal" class="modal" style="display:none">
+        <form id="form-veiculo" class="admin-form-modal">
+          <h3 id="modal-titulo">Cadastrar Veículo</h3>
+          <label>Marca<input type="text" name="marca" required maxlength="32"></label>
+          <label>Modelo<input type="text" name="modelo" required maxlength="32"></label>
+          <label>Ano<input type="number" name="ano" required min="1900" max="2100"></label>
+          <label>Preço (R$)<input type="number" name="preco" required min="0" step="100"></label>
+          <label>Cor<input type="text" name="cor" maxlength="24"></label>
+          <label>KM<input type="number" name="km" min="0" step="100"></label>
+          <label>Foto<input type="url" name="foto" placeholder="URL da imagem"></label>
+          <div class="admin-form-modal-actions">
+            <button type="submit" class="botao-comprar admin-add-btn" id="btn-salvar-veiculo">Salvar</button>
+            <button type="button" class="admin-add-btn" id="btn-cancelar-veiculo">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  `;
+}
+
+export function renderAdminLeads() {
+  return `
+    <section class="admin-section">
+      <h2>Leads / Contatos Recebidos</h2>
+      <div id="admin-leads-lista">
+        <!-- Tabela de leads/contatos -->
+        <p>Nenhum lead recebido ainda.</p>
+      </div>
+    </section>
+  `;
+}
+
+export function renderAdminAgendamentos() {
+  return `
+    <section class="admin-section">
+      <h2>Agendamentos de Test-Drive</h2>
+      <div id="admin-agendamentos-lista">
+        <!-- Tabela de agendamentos -->
+        <p>Nenhum agendamento registrado.</p>
+      </div>
+    </section>
+  `;
+}
+
+export function renderAdminRelatorios() {
+  return `
+    <section class="admin-section">
+      <h2>Relatórios</h2>
+      <div id="admin-relatorios-lista">
+        <p>Relatórios de veículos, leads e agendamentos serão exibidos aqui.</p>
+      </div>
+    </section>
+  `;
+}
