@@ -1,5 +1,3 @@
-// adminViews.js - Componentes de interface para Admin Relíquias
-
 export function renderAdminVeiculos() {
   return `
     <section class="admin-section">
@@ -20,7 +18,7 @@ export function renderAdminVeiculos() {
           <label>Preço (R$)<input type="number" name="preco" required min="0" step="100"></label>
           <label>Cor<input type="text" name="cor" maxlength="24"></label>
           <label>KM<input type="number" name="km" min="0" step="100"></label>
-          <label>Foto<input type="url" name="foto" placeholder="URL da imagem"></label>
+          <label>Foto<input type="file" name="foto" accept="image/*"></label>
           <div class="admin-form-modal-actions">
             <button type="submit" class="botao-comprar admin-add-btn" id="btn-salvar-veiculo">Salvar</button>
             <button type="button" class="admin-add-btn" id="btn-cancelar-veiculo">Cancelar</button>
@@ -32,15 +30,27 @@ export function renderAdminVeiculos() {
 }
 
 export function renderAdminLeads() {
-  return `
+  const html = `
     <section class="admin-section">
       <h2>Leads / Contatos Recebidos</h2>
-      <div id="admin-leads-lista">
-        <!-- Tabela de leads/contatos -->
-        <p>Nenhum lead recebido ainda.</p>
-      </div>
+      <table id="leads-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Mensagem</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </section>
   `;
+
+  const content = document.getElementById('admin-content');
+  content.innerHTML = html;
+  renderLeads(); // Chama diretamente após inserir o HTML
 }
 
 export function renderAdminAgendamentos() {

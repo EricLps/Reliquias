@@ -1,4 +1,3 @@
-// favorites.js - Lista de carros favoritos do usuário
 import { createCarCard } from './card.js';
 import { renderCatalog } from './catalog.js';
 

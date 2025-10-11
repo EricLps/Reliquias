@@ -1,4 +1,4 @@
-// auth.js - Autenticação simples (simulada)
+//(simulada)
 const usersKey = 'usuarios';
 
 function getUsers() {

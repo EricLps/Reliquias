@@ -1,4 +1,3 @@
-// logo.js - Injeta a logo SVG do JELLI Group no elemento #logo-jelli
 (function() {
   const logoHTML = `
     <a href="#catalog" aria-label="JELLI Group Home">

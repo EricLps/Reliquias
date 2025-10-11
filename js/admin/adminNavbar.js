@@ -1,4 +1,3 @@
-// adminNavbar.js - Navbar modular para área administrativa Relíquias
 export function renderAdminNavbar() {
   return `
     <header>

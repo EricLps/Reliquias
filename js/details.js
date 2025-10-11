@@ -1,4 +1,3 @@
-// details.js - Página de detalhes do carro
 import { renderGallery } from './gallery.js';
 
 const cars = [
@@ -29,7 +28,6 @@ const cars = [
       { usuario: 'Ana', nota: 4, comentario: 'Ótimo estado, recomendo.' }
     ]
   },
-  // ...outros carros (mesmo formato do catalog.js)
 ];
 
 function getCarById(id) {

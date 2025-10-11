@@ -1,4 +1,3 @@
-// card.js - Componente de card individual
 import { openSidePanel } from './sidepanel.js';
 export function createCarCard(car) {
   const card = document.createElement('article');

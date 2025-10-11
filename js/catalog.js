@@ -1,4 +1,3 @@
-// catalog.js - Listagem e filtros de carros
 import { createCarCard } from './card.js';
 
 export const cars = [

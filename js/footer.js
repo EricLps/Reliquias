@@ -1,4 +1,3 @@
-// footer.js - Rodapé reutilizável
 export function renderFooter() {
     const footer = document.getElementById('footer');
     footer.innerHTML = `

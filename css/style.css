@@ -1,4 +1,3 @@
-/* --- MODAL ADMIN VEÍCULO --- */
 .admin-form-modal {
   display: flex;
   flex-wrap: wrap;
@@ -214,7 +213,7 @@
   max-width: 160px;
   border-radius: 16px;
 }
-/* --- MENU LATERAL (OFFCANVAS) --- */
+/* --- MENU LATERAL --- */
 .side-panel-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -329,7 +328,7 @@
   transition: background 0.38s cubic-bezier(.4,1.4,.6,1), color 0.18s, transform 0.22s, box-shadow 0.22s;
   outline: none;
 }
-/* Efeito de brilho animado no hover */
+/* Efeito de brilho*/
 .side-panel-actions button::after,
 .side-panel-actions a::after {
   content: '';
@@ -449,7 +448,6 @@
     padding: 1rem;
   }
 }
-/* style.css - Relíquias */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -991,4 +989,66 @@ textarea:focus {
     flex-wrap: wrap;
     gap: 0.8rem;
   }
+}
+#produtos-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+  background: rgba(240, 240, 240, 0.8);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+#produtos-table th, #produtos-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+}
+#produtos-table th {
+  background: rgba(200, 200, 200, 0.8);
+  color: #333;
+  font-weight: 700;
+  font-size: 1rem;
+}
+#produtos-table tr {
+  border-bottom: 1px solid rgba(220, 220, 220, 0.8);
+}
+#produtos-table tr:last-child {
+  border-bottom: none;
+}
+#produtos-table td {
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  font-size: 0.95rem;
+}
+/* Adicionando classes para substituir estilos inline em gallery.js */
+.gallery-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gallery-main-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #0002;
+  cursor: zoom-in;
+}
+
+.gallery-thumbnails {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gallery-thumbnail {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gallery-thumbnail.active {
+  border: 2px solid #ffb300;
 }

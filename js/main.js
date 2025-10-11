@@ -9,7 +9,7 @@ import { renderContact } from './contact.js';
 import { renderAuth } from './auth.js';
 import { renderSobre } from './sobre.js';
 
-// SPA simples: navegação por hash
+
 function route() {
     const main = document.getElementById('main-content');
     const hash = window.location.hash.replace('#', '');
@@ -36,7 +36,7 @@ function route() {
             renderSobre(main);
             break;
         default:
-            renderCatalog(main, true); // Home = catálogo em destaque
+            renderCatalog(main, true);
     }
 }
 

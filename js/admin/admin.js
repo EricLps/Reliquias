@@ -1,4 +1,3 @@
-// admin.js - SPA/Admin para Relíquias
 import { renderAdminVeiculos, renderAdminLeads, renderAdminAgendamentos, renderAdminRelatorios } from './adminViews.js';
 
 function setActiveNav(hash) {
@@ -21,7 +20,7 @@ function renderAdminPage() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Forçar hash inicial se não houver
+  // Define o hash inicial se não houver
   if (!window.location.hash) {
     window.location.hash = '#admin-veiculos';
   }
@@ -37,7 +36,7 @@ const veiculosFake = [
   { id: 3, marca: 'Toyota', modelo: 'Corolla AE101', ano: 1995, preco: 42000, cor: 'Amarelo', km: 110000 },
 ];
 
-// --- MODAL DE CADASTRO/EDIÇÃO ---
+// Funções para gerenciar o modal de cadastro/edição de veículos
 function abrirModalVeiculo(edicao = false, dados = null) {
   const modal = document.getElementById('admin-veiculo-form-modal');
   if (!modal) return;
@@ -53,9 +52,6 @@ function abrirModalVeiculo(edicao = false, dados = null) {
     form.preco.value = dados.preco || '';
     form.cor.value = dados.cor || '';
     form.km.value = dados.km || '';
-    form.foto.value = dados.foto || '';
-  } else if (form) {
-    form.reset();
   }
 }
 
@@ -65,26 +61,77 @@ function fecharModalVeiculo() {
   document.body.style.overflow = '';
 }
 
-// Eventos do modal - devem ser reanexados após renderização SPA
+function renderModalVeiculo() {
+  const modalHTML = `
+    <div id="admin-veiculo-form-modal" class="modal" style="display:none">
+      <form id="form-veiculo" class="admin-form-modal">
+        <h3 id="modal-titulo">Cadastrar Veículo</h3>
+        <label>Marca<input type="text" name="marca" required maxlength="32"></label>
+        <label>Modelo<input type="text" name="modelo" required maxlength="32"></label>
+        <label>Ano<input type="number" name="ano" required min="1900" max="2100"></label>
+        <label>Preço (R$)<input type="number" name="preco" required min="0" step="100"></label>
+        <label>Cor<input type="text" name="cor" maxlength="24"></label>
+        <label>KM<input type="number" name="km" min="0" step="100"></label>
+        <label>Foto<input type="file" name="foto" accept="image/*"></label>
+        <div class="admin-form-modal-actions">
+          <button type="submit" class="botao-comprar admin-add-btn" id="btn-salvar-veiculo">Salvar</button>
+          <button type="button" class="admin-add-btn" id="btn-cancelar-veiculo">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  const body = document.querySelector('body');
+  body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
 function setupModalVeiculoEvents() {
   const btnAdd = document.getElementById('btn-add-veiculo');
   if (btnAdd) {
-    btnAdd.onclick = () => abrirModalVeiculo(false);
+    btnAdd.addEventListener('click', () => abrirModalVeiculo(false));
   }
+
   const btnCancel = document.getElementById('btn-cancelar-veiculo');
   if (btnCancel) {
-    btnCancel.onclick = fecharModalVeiculo;
+    btnCancel.addEventListener('click', () => {
+      const modal = document.getElementById('admin-veiculo-form-modal');
+      if (modal) modal.style.display = 'none';
+      document.body.style.overflow = '';
+    });
   }
-  // Fechar modal ao clicar fora do form
+
   const modal = document.getElementById('admin-veiculo-form-modal');
   if (modal) {
-    modal.addEventListener('mousedown', function(e) {
-      if (e.target === modal) fecharModalVeiculo();
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // Evento de envio do formulário do modal
+  const formVeiculo = document.getElementById('form-veiculo');
+  if (formVeiculo) {
+    formVeiculo.addEventListener('submit', (event) => {
+      event.preventDefault(); // Previne o comportamento padrão do formulário
+
+      const formData = new FormData(formVeiculo);
+      const foto = formData.get('foto'); // Captura o arquivo enviado
+
+      if (foto && foto instanceof File) {
+        console.log('Arquivo selecionado:', foto.name);
+        // Lógica para enviar o arquivo ao servidor ou exibir uma pré-visualização
+      } else {
+        console.error('Nenhum arquivo foi selecionado ou o arquivo é inválido.');
+      }
+
+      fecharModalVeiculo(); // Fecha o modal após o envio
     });
   }
 }
 
-// Chamar após renderização da view de veículos
+// Renderiza a tabela de veículos
 function renderTabelaVeiculos() {
   const lista = document.getElementById('admin-veiculos-lista');
   if (!lista) return;
@@ -121,5 +168,73 @@ function renderTabelaVeiculos() {
   </table>`;
   lista.innerHTML = html;
   setupModalVeiculoEvents();
+}
+
+// Renderiza o modal ao carregar a página
+renderModalVeiculo();
+setupModalVeiculoEvents();
+
+//exibir miniatura e gerenciar imagem
+const fotoInput = document.querySelector('input[name="foto"]');
+const fotoContainer = document.createElement('div');
+fotoContainer.className = 'foto-container';
+
+const previewImg = document.createElement('img');
+previewImg.className = 'preview-img';
+
+const removeBtn = document.createElement('button');
+removeBtn.className = 'remove-btn';
+removeBtn.textContent = 'Remover';
+
+removeBtn.addEventListener('click', () => {
+  previewImg.src = '';
+  previewImg.style.display = 'none';
+  removeBtn.style.display = 'none';
+  fotoInput.value = '';
+});
+
+fotoInput.style.display = 'none';
+fotoInput.style.opacity = '0';
+fotoInput.style.position = 'absolute';
+fotoInput.style.zIndex = '-1';
+
+const customBtn = document.createElement('button');
+customBtn.textContent = 'Selecionar um arquivo';
+customBtn.className = 'custom-file-btn';
+
+customBtn.addEventListener('mouseover', () => {
+  customBtn.classList.add('hover');
+});
+
+customBtn.addEventListener('mouseout', () => {
+  customBtn.classList.remove('hover');
+});
+
+customBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  fotoInput.click();
+});
+
+fotoInput.addEventListener('change', (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      previewImg.src = e.target.result;
+      previewImg.style.display = 'block';
+      removeBtn.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+fotoContainer.appendChild(customBtn);
+fotoContainer.appendChild(previewImg);
+fotoContainer.appendChild(removeBtn);
+
+const fotoLabel = fotoInput.closest('label');
+if (fotoLabel) {
+  fotoLabel.classList.add('foto-label');
+  fotoLabel.appendChild(fotoContainer);
 }
 

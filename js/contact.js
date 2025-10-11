@@ -1,4 +1,3 @@
-// contact.js - Formulário de contato/agendamento
 export function renderContact(main) {
   main.innerHTML = `
     <h2>Contato / Agendamento</h2>
