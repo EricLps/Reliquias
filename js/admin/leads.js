@@ -16,14 +16,14 @@ export function renderLeads() {
             const row = document.createElement('tr');
 
             row.innerHTML = `
-              <td>${lead.nome}</td>
-              <td>${lead.email}</td>
-              <td>${lead.telefone}</td>
-              <td>${lead.mensagem}</td>
-              <td>
+                <td>${lead.nome}</td>
+                <td>${lead.email}</td>
+                <td>${lead.telefone}</td>
+                <td>${lead.mensagem}</td>
+                <td>
                 <button class="btn-acao">Responder</button>
                 <button class="btn-acao">Excluir</button>
-              </td>
+                </td>
             `;
 
             tbody.appendChild(row);
