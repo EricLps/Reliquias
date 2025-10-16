@@ -1,32 +1,40 @@
-export function renderLeads() {
-    const leads = [
-        { nome: 'João Silva', email: 'joao@email.com', telefone: '(11) 99999-9999', mensagem: 'Gostaria de mais informações sobre o veículo.' },
-        { nome: 'Maria Oliveira', email: 'maria@email.com', telefone: '(21) 98888-8888', mensagem: 'Quando estará disponível para test-drive?' },
-        { nome: 'Carlos Santos', email: 'carlos@email.com', telefone: '(31) 97777-7777', mensagem: 'Qual é o preço final com desconto?' }
-    ];
+const API_BASE = 'http://localhost:4000/api';
+function authHeaders(extra={}) {
+    const token = localStorage.getItem('token');
+    return token ? { ...extra, Authorization: `Bearer ${token}` } : { ...extra };
+}
 
-    setTimeout(() => {
-        const tbody = document.querySelector('#leads-table tbody');
-        if (!tbody) {
-            console.error('Elemento tbody não encontrado. Verifique se a tabela foi renderizada corretamente.');
+export async function renderLeads() {
+    const tbody = document.querySelector('#leads-table tbody');
+    if (!tbody) {
+        console.error('Elemento tbody não encontrado. Verifique se a tabela foi renderizada corretamente.');
+        return;
+    }
+    tbody.innerHTML = '<tr><td colspan="5">Carregando...</td></tr>';
+    try {
+    const resp = await fetch(`${API_BASE}/leads`, { headers: authHeaders() });
+    if (resp.status === 401 || resp.status === 403) { window.location.href = 'login.html'; return; }
+        const leads = await resp.json();
+        if (!Array.isArray(leads) || leads.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">Nenhum lead encontrado.</td></tr>';
             return;
         }
-
+        tbody.innerHTML = '';
         leads.forEach(lead => {
             const row = document.createElement('tr');
-
             row.innerHTML = `
-                <td>${lead.nome}</td>
-                <td>${lead.email}</td>
-                <td>${lead.telefone}</td>
-                <td>${lead.mensagem}</td>
+                <td>${lead.nome || ''}</td>
+                <td>${lead.email || ''}</td>
+                <td>${lead.telefone || ''}</td>
+                <td>${lead.mensagem || ''}</td>
                 <td>
-                <button class="btn-acao">Responder</button>
-                <button class="btn-acao">Excluir</button>
+                    <button class="btn-acao" data-email="${lead.email || ''}">Responder</button>
                 </td>
             `;
-
             tbody.appendChild(row);
         });
-    }, 0);
+    } catch (e) {
+        console.error(e);
+        tbody.innerHTML = '<tr><td colspan="5">Erro ao carregar leads.</td></tr>';
+    }
 }

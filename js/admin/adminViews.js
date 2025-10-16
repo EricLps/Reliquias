@@ -1,3 +1,6 @@
+import { renderLeads } from './leads.js';
+import { renderAgendamentos } from './agendamentos.js';
+
 export function renderAdminVeiculos() {
   return `
     <section class="admin-section">
@@ -15,10 +18,13 @@ export function renderAdminVeiculos() {
           <label>Marca<input type="text" name="marca" required maxlength="32"></label>
           <label>Modelo<input type="text" name="modelo" required maxlength="32"></label>
           <label>Ano<input type="number" name="ano" required min="1900" max="2100"></label>
-          <label>Preço (R$)<input type="number" name="preco" required min="0" step="100"></label>
+          <label>Preço (R$)<input type="text" name="preco" required placeholder="0,00"></label>
           <label>Cor<input type="text" name="cor" maxlength="24"></label>
-          <label>KM<input type="number" name="km" min="0" step="100"></label>
-          <label>Foto<input type="file" name="foto" accept="image/*"></label>
+          <label>KM<input type="text" name="km" placeholder="0"></label>
+          <label>Imagens<input type="file" name="imagens" accept="image/*" multiple></label>
+          <label>Imagem por URL<input type="url" name="imagemUrl" placeholder="https://..."></label>
+          <label>Imagens por URL (separar por vírgula)<input type="text" name="imagensUrls" placeholder="https://..., https://..."></label>
+          <div id="imagens-atuais" class="imagens-atuais"></div>
           <div class="admin-form-modal-actions">
             <button type="submit" class="botao-comprar admin-add-btn" id="btn-salvar-veiculo">Salvar</button>
             <button type="button" class="admin-add-btn" id="btn-cancelar-veiculo">Cancelar</button>
@@ -54,15 +60,15 @@ export function renderAdminLeads() {
 }
 
 export function renderAdminAgendamentos() {
-  return `
+  const html = `
     <section class="admin-section">
       <h2>Agendamentos de Test-Drive</h2>
-      <div id="admin-agendamentos-lista">
-        <!-- Tabela de agendamentos -->
-        <p>Nenhum agendamento registrado.</p>
-      </div>
+      <div id="admin-agendamentos-lista"></div>
     </section>
   `;
+  const content = document.getElementById('admin-content');
+  content.innerHTML = html;
+  renderAgendamentos();
 }
 
 export function renderAdminRelatorios() {

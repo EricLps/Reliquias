@@ -1,4 +1,3 @@
-// sobre.js - Página Sobre Nós com Parallax
 export function renderSobre(main) {
   main.innerHTML = `
     <section class="parallax-sobre">

@@ -185,27 +185,6 @@
 .admin-action-delete svg path {
   stroke: #c9a74a;
 }
-.admin-action-btn {
-  background: none;
-  color: #1a2238;
-  border: 1.2px solid #c9a74a;
-  border-radius: 8px;
-  font-size: 0.97rem;
-  font-weight: 600;
-  padding: 0.28rem 0.85rem;
-  margin-right: 0.3rem;
-  cursor: pointer;
-  transition: background 0.18s, color 0.18s, border 0.18s;
-}
-.admin-action-btn:last-child {
-  margin-right: 0;
-}
-.admin-action-btn:hover, .admin-action-btn:focus {
-  background: #f8f7f3;
-  color: #c9a74a;
-  border-color: #b89a3c;
-  outline: none;
-}
 .botao-comprar.admin-menor {
   font-size: 0.98rem;
   padding: 0.45rem 0;
@@ -633,8 +612,9 @@ main {
 
 .grid-carros {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
+  justify-items: center; /* centraliza os cards quando houver poucas colunas */
 }
 @keyframes fadeInUp {
   from {
@@ -655,6 +635,9 @@ main {
   overflow: hidden;
   transition: box-shadow 0.3s cubic-bezier(.4,1.4,.6,1);
   animation: fadeInUp 0.7s cubic-bezier(.4,1.4,.6,1);
+  min-height: 420px; /* altura mínima para alinhar os cards */
+  width: 100%;
+  max-width: 360px; /* evita estourar 100% da linha com poucos itens */
 }
 .card-carro:hover,
 .card-carro:focus-within {
@@ -663,13 +646,19 @@ main {
   transform: translateY(-6px) scale(1.03);
   transition: box-shadow 0.3s, transform 0.3s;
 }
-.card-carro img {
+.card-img { /* wrapper para reservar espaço fixo e evitar layout shift */
   width: 100%;
   height: 160px;
-  object-fit: cover;
+  overflow: hidden;
   border-bottom: 3px solid #ffdd57;
+}
+.card-carro img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   transition: transform 0.4s cubic-bezier(.4,1.4,.6,1), filter 0.4s;
   filter: grayscale(10%) brightness(0.98);
+  display: block;
 }
 .card-carro img:hover,
 .card-carro img:focus {
@@ -708,6 +697,26 @@ main {
   color: #555;
   margin-bottom: 1.1rem;
   flex-grow: 1;
+  max-height: 3.2em; /* ~2 linhas */
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* Fixar altura do bloco de informações para consistência visual */
+.card-conteudo .modelo { min-height: 28px; }
+.card-conteudo .ano-preco { min-height: 22px; }
+.card-conteudo .marca { min-height: 18px; }
+
+/* Miniaturas (público e filtros) com tamanho consistente */
+.admin-thumb,
+.gallery-thumbnail,
+.grid-carros .card-carro .miniatura {
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
 }
 .botao-comprar {
   background: linear-gradient(90deg, #e7d7a7 0%, #c9a74a 100%);

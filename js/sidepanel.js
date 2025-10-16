@@ -1,7 +1,12 @@
-// sidepanel.js - Menu lateral de detalhes do carro
-import { cars } from './catalog.js';
+const API_BASE = 'http://localhost:4000/api';
 
-export function openSidePanel(carId) {
+async function fetchVeiculo(id) {
+  const resp = await fetch(`${API_BASE}/veiculos/${id}`);
+  if (!resp.ok) throw new Error('Veículo não encontrado');
+  return resp.json();
+}
+
+export async function openSidePanel(carId) {
   let panel = document.getElementById('side-panel');
   let overlay = document.getElementById('side-panel-overlay');
   if (!panel) {
@@ -16,15 +21,21 @@ export function openSidePanel(carId) {
     overlay.className = 'side-panel-overlay';
     document.body.appendChild(overlay);
   }
-  const car = cars.find(c => c.id === carId);
-  if (!car) return;
+  let car;
+  try {
+    car = await fetchVeiculo(carId);
+  } catch (e) { return; }
+  const principal = (car.imagens || []).find(i => i.principal) || (car.imagens || [])[0];
+  const imgUrl = principal?.fileId
+    ? `${API_BASE}/veiculos/imagem/${principal.fileId}`
+    : (principal?.url || car.imagem || 'https://via.placeholder.com/800x450?text=Ve%C3%ADculo');
   panel.innerHTML = `
     <div class="side-panel-header">
       <h3>${car.marca} ${car.modelo}</h3>
       <button class="side-panel-close" aria-label="Fechar" title="Fechar">&times;</button>
     </div>
     <div class="side-panel-content">
-      <img src="${car.imagem}" alt="${car.marca} ${car.modelo}">
+  <img src="${imgUrl}" alt="${car.marca} ${car.modelo}">
       <div class="car-meta">Ano: ${car.ano} • Carroceria: ${car.carroceria} • R$ ${car.preco.toLocaleString('pt-BR')}</div>
       <div class="car-desc">${car.descricao || ''}</div>
       <div class="side-panel-simulador">
@@ -42,18 +53,16 @@ export function openSidePanel(carId) {
       </div>
     </div>
   `;
-  // Garante animação: adiciona classe 'active' após inserção no DOM
+
   setTimeout(() => {
     panel.classList.add('active');
     overlay.classList.add('active');
   }, 10);
   document.body.style.overflow = 'hidden';
 
-  // Fechar
   panel.querySelector('.side-panel-close').onclick = closeSidePanel;
   overlay.onclick = closeSidePanel;
 
-  // Simulador de financiamento
   panel.querySelector('#btn-simular').onclick = () => {
     const entrada = parseFloat(panel.querySelector('#valorEntrada').value) || 0;
     const parcelas = parseInt(panel.querySelector('#parcelas').value) || 36;
@@ -65,7 +74,6 @@ export function openSidePanel(carId) {
       `Parcela: <b>R$ ${parcela.toLocaleString('pt-BR', {minimumFractionDigits:2})}</b><br>Total: R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
   };
 
-  // Agendamento de test-drive
   panel.querySelector('#btn-agendar').onclick = () => {
     alert('Solicitação de agendamento enviada! Entraremos em contato.');
   };

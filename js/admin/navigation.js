@@ -14,7 +14,7 @@ export function loadSection(section) {
       break;
     case 'leads':
       content.innerHTML = '<h2>Leads Recebidos</h2><table id="leads-table"><thead><tr><th>Nome</th><th>Email</th><th>Telefone</th><th>Mensagem</th><th>Ações</th></tr></thead><tbody></tbody></table>';
-      setTimeout(() => renderLeads(), 0); // Garante que renderLeads seja chamada após o DOM ser atualizado
+      setTimeout(() => renderLeads(), 0);
       break;
     case 'contatos':
       content.innerHTML = '<h2>Tentativas de Contato</h2><p>Gerencie as tentativas de contato.</p>';

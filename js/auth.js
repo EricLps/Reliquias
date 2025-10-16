@@ -15,6 +15,8 @@ function getSession() {
 }
 function clearSession() {
   localStorage.removeItem('session');
+  localStorage.removeItem('token');
+  localStorage.removeItem('isAuthenticated');
 }
 
 export function renderAuth(main) {
@@ -39,14 +41,42 @@ export function renderAuth(main) {
       <div id="login-feedback"></div>
     </div>
   `;
-  document.getElementById('login-form').onsubmit = e => {
+  document.getElementById('login-form').onsubmit = async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.target));
+    const email = (data.email || '').trim().toLowerCase();
+    const senha = (data.senha || '').trim();
+
+    // Fluxo admin: autentica no backend para obter token
+    if (email === 'admin@reliquias.com') {
+      try {
+        const resp = await fetch('http://localhost:4000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
+        });
+        if (!resp.ok) throw new Error('Credenciais inválidas');
+        const payload = await resp.json();
+        if (!payload?.token) throw new Error('Resposta de login inválida');
+        localStorage.setItem('token', payload.token);
+        localStorage.setItem('isAuthenticated', 'true');
+        localStorage.setItem('session', JSON.stringify(payload.user || { email, role: 'admin', nome: 'Administrador' }));
+        window.location.href = 'admin.html#admin-veiculos';
+        return;
+      } catch (err) {
+        document.getElementById('login-feedback').innerHTML = '<span style="color:red;">Credenciais inválidas.</span>';
+        return;
+      }
+    }
+
+    // Fluxo usuário comum (simulado)
     const users = getUsers();
-    const user = users.find(u => u.email === data.email && u.senha === data.senha);
+    const user = users.find(u => (u.email || '').toLowerCase() === email && (u.senha || '') === senha);
     if (user) {
       setSession(user);
-      location.reload();
+      localStorage.setItem('isAuthenticated', 'true');
+      document.getElementById('login-feedback').innerHTML = '<span style="color:green;">Login realizado, redirecionando...</span>';
+      setTimeout(() => location.hash = '#catalog', 300);
     } else {
       document.getElementById('login-feedback').innerHTML = '<span style="color:red;">Credenciais inválidas.</span>';
     }
