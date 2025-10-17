@@ -21,7 +21,7 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 - Upload de imagens (GridFS + Sharp) e Imagem por URL
 - Segurança (JWT, Helmet, Rate Limit) e CORS
 - Configuração e execução (dev)
-- Deploy (Vercel + Render/Railway)
+- Deploy (Vercel + Render)
 - Configuração do Frontend para API (API_BASE dinâmica)
 - Exemplos rápidos (PowerShell/curl)
 - Troubleshooting (erros comuns)
