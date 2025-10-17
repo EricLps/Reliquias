@@ -1,0 +1,11 @@
+# Node
+server/node_modules/
+server/package-lock.json
+
+# Env
+server/.env
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/

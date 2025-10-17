@@ -1,4 +1,5 @@
 import { renderAdminVeiculos, renderAdminLeads, renderAdminAgendamentos, renderAdminRelatorios } from './adminViews.js';
+import { API_BASE } from '../config.js';
 
 function ensureAuthenticated() {
   try {
@@ -17,7 +18,6 @@ function ensureAuthenticated() {
   }
 }
 
-const API_BASE = 'http://localhost:4000/api';
 
 function authHeaders(extra = {}) {
   const token = localStorage.getItem('token');
