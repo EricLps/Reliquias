@@ -1,5 +1,5 @@
-import { renderLeads } from './leads.js';
-import { renderAgendamentos } from './agendamentos.js';
+// As views abaixo passam a apenas RETORNAR o HTML. A lógica de inserção no DOM
+// e inicializações adicionais (ex.: renderLeads/renderAgendamentos) ficam em admin.js.
 
 export function renderAdminVeiculos() {
   return `
@@ -74,10 +74,7 @@ export function renderAdminLeads() {
       </table>
     </section>
   `;
-
-  const content = document.getElementById('admin-content');
-  content.innerHTML = html;
-  renderLeads();
+  return html;
 }
 
 export function renderAdminAgendamentos() {
@@ -87,9 +84,7 @@ export function renderAdminAgendamentos() {
       <div id="admin-agendamentos-lista"></div>
     </section>
   `;
-  const content = document.getElementById('admin-content');
-  content.innerHTML = html;
-  renderAgendamentos();
+  return html;
 }
 
 export function renderAdminRelatorios() {
