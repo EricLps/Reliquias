@@ -5,8 +5,8 @@
 /* Títulos e textos */
 .admin-agenda h2 { color:#c9a74a; font-weight:900; margin:0 0 1rem; }
 .admin-agenda h3 { color:#0f2747; margin:0; font-size:1.1rem; }
-.admin-agenda label { font-weight:700; color:#0f2747; font-size:.92rem; }
-.admin-agenda input, .admin-agenda select, .admin-agenda textarea { background:#fff; border:1px solid #d1d5db; border-radius:10px; padding:.55rem .7rem; font-size:.98rem; color:#111827; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+.admin-agenda label { font-weight:700; color:#0f2747; font-size:.92rem; display:block; }
+.admin-agenda input, .admin-agenda select, .admin-agenda textarea { background:#fff; border:1px solid #d1d5db; border-radius:10px; padding:.55rem .7rem; font-size:.98rem; color:#111827; box-shadow:0 1px 2px rgba(0,0,0,.03); width:100%; }
 .admin-agenda input:focus, .admin-agenda select:focus, .admin-agenda textarea:focus { outline:2px solid #e7d7a7; border-color:#c9a74a; }
 
 /* Header e ações */
@@ -26,7 +26,7 @@
 .admin-agenda .ag-form .ag-col-6 { grid-column: span 6; }
 .admin-agenda .ag-form .ag-col-12 { grid-column: 1 / -1; }
 .admin-agenda .ag-form .ag-notas { grid-column: 1 / -1; }
-.admin-agenda .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; }
+.admin-agenda .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; margin-top:8px; }
 
 /* Input group (Data/Hora) */
 .admin-agenda .ag-form .ag-datetime .input-group { display:flex; align-items:center; }
@@ -35,12 +35,14 @@
 .admin-agenda .ag-form .input-group .append:hover { background:#e7edf6; }
 
 /* Formato "tabela" para o formulário */
+.admin-agenda .ag-form.ag-form-table { display:block; }
 .admin-agenda .ag-form-table { gap:12px; }
 .admin-agenda .ag-form-table .ag-row { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:12px; }
 .admin-agenda .ag-form-table .ag-cell { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:.6rem .75rem; box-shadow:0 1px 2px rgba(16,24,40,.04); display:flex; flex-direction:column; gap:6px; }
 .admin-agenda .ag-form-table .ag-cell label { font-size:.85rem; color:#6b7280; font-weight:700; }
 .admin-agenda .ag-form-table .ag-cell.ag-span-2 { grid-column: span 2; }
 .admin-agenda .ag-form-table .ag-cell.ag-span-3 { grid-column: 1 / -1; }
+.admin-agenda .ag-form-table .ag-form-actions { margin-top: 8px; }
 
 @media (max-width: 900px){
   .admin-agenda .ag-form-table .ag-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }

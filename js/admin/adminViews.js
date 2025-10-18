@@ -80,7 +80,7 @@ export function renderAdminLeads() {
 export function renderAdminAgendamentos() {
   const html = `
     <section class="admin-section">
-      <h2>Agendamentos de Test-Drive</h2>
+      <h2>Agendamentos</h2>
       <div id="admin-agendamentos-lista"></div>
     </section>
   `;
