@@ -34,6 +34,22 @@
 .admin-agenda .ag-form .input-group .append { margin-left:6px; background:#eef2f7; border:1px solid #d1d5db; border-radius:10px; padding:.48rem .55rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
 .admin-agenda .ag-form .input-group .append:hover { background:#e7edf6; }
 
+/* Formato "tabela" para o formulário */
+.admin-agenda .ag-form-table { gap:12px; }
+.admin-agenda .ag-form-table .ag-row { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:12px; }
+.admin-agenda .ag-form-table .ag-cell { background:#fff; border:1px solid #e5e7eb; border-radius:12px; padding:.6rem .75rem; box-shadow:0 1px 2px rgba(16,24,40,.04); display:flex; flex-direction:column; gap:6px; }
+.admin-agenda .ag-form-table .ag-cell label { font-size:.85rem; color:#6b7280; font-weight:700; }
+.admin-agenda .ag-form-table .ag-cell.ag-span-2 { grid-column: span 2; }
+.admin-agenda .ag-form-table .ag-cell.ag-span-3 { grid-column: 1 / -1; }
+
+@media (max-width: 900px){
+  .admin-agenda .ag-form-table .ag-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .admin-agenda .ag-form-table .ag-cell.ag-span-2 { grid-column: 1 / -1; }
+}
+@media (max-width: 600px){
+  .admin-agenda .ag-form-table .ag-row { grid-template-columns: 1fr; }
+}
+
 /* Botões */
 .admin-agenda .btn-primary { background:linear-gradient(90deg, #e7d7a7 0%, #c9a74a 100%); color:#1a2238; border:1px solid #c9a74a; border-radius:10px; padding:.5rem 1rem; font-weight:700; cursor:pointer; }
 .admin-agenda .btn-primary:hover { filter:brightness(.98); }

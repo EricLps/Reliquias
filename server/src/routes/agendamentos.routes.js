@@ -34,8 +34,18 @@ router.get('/', verifyToken, requireAdmin, async (_req, res) => {
   res.json(lista);
 });
 
-export default router;
- 
+// Obter um agendamento específico (diagnóstico)
+router.get('/:id', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const ag = await Agendamento.findById(req.params.id);
+    if (!ag) return res.status(404).json({ error: 'Não encontrado' });
+    res.json(ag);
+  } catch (err) {
+    console.error('GET /agendamentos/:id erro:', req.params.id, err?.message);
+    res.status(500).json({ error: 'Erro ao buscar agendamento' });
+  }
+});
+
 // Atualizar status do agendamento
 router.patch('/:id/status', verifyToken, requireAdmin, async (req, res) => {
   try {
@@ -69,11 +79,18 @@ router.patch('/:id', verifyToken, requireAdmin, async (req, res) => {
 // Excluir agendamento (admin)
 router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
   try {
-    const ag = await Agendamento.findByIdAndDelete(req.params.id);
-    if (!ag) return res.status(404).json({ error: 'Não encontrado' });
+    const id = String((req.params.id || '').trim());
+    console.log('DELETE /agendamentos/:id =>', id);
+    const ag = await Agendamento.findByIdAndDelete(id);
+    if (!ag) {
+      console.warn('Agendamento não encontrado para exclusão:', id);
+      return res.status(404).json({ error: 'Não encontrado' });
+    }
     res.status(204).send();
   } catch (err) {
-    console.error(err);
+    console.error('Erro ao excluir agendamento:', req.params.id, err);
     res.status(500).json({ error: 'Erro ao excluir agendamento' });
   }
 });
+
+export default router;

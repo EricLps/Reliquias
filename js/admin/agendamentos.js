@@ -183,16 +183,20 @@ function renderRows(lista, tbody) {
   });
   tbody.querySelectorAll('.ag-actions .btn-delete').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const id = btn.getAttribute('data-id');
+      const id = (btn.getAttribute('data-id') || '').trim();
       if (!id) return;
       if (!confirm('Excluir este agendamento? Esta ação não pode ser desfeita.')) return;
       try {
         const resp = await fetch(`${API_BASE}/agendamentos/${id}`, { method: 'DELETE', headers: authHeaders() });
-        if (!resp.ok && resp.status !== 204) throw new Error('Falha ao excluir');
+        if (!resp.ok) {
+          let msg = 'Falha ao excluir';
+          try { const j = await resp.json(); if (j?.error) msg = `${msg}: ${j.error}`; } catch {}
+          throw new Error(msg);
+        }
         await renderAgendamentos();
       } catch (e) {
         console.error(e);
-        alert('Não foi possível excluir.');
+        alert(e?.message || 'Não foi possível excluir.');
       }
     });
   });
@@ -206,7 +210,6 @@ export async function renderAgendamentos() {
       <div class="ag-container">
       <div class="ag-header">
         <h3>Agenda / Agendamentos</h3>
-        <button type="button" id="ag-novo" class="btn-ghost">Novo agendamento</button>
       </div>
   <div class="ag-filters">
         <label>Tipo
@@ -245,42 +248,58 @@ export async function renderAgendamentos() {
           <button type="button" id="f-clear" class="btn-ghost">Limpar</button>
         </div>
       </div>
-      <form id="ag-form" class="ag-form">
-        <label class="ag-col-3"> Tipo
-          <select name="tipo">
-            <option value="test-drive">Test-Drive</option>
-            <option value="vistoria">Vistoria</option>
-            <option value="evento">Evento</option>
-            <option value="outro">Outro</option>
-          </select>
-        </label>
-        <label class="ag-col-3"> Prioridade
-          <select name="prioridade">
-            <option value="azul">Azul (baixa)</option>
-            <option value="amarelo">Amarelo (média)</option>
-            <option value="vermelho">Vermelho (alta)</option>
-          </select>
-        </label>
-        <label class="ag-col-6"> Título
-          <input type="text" name="titulo" placeholder="ex.: Test-drive do João">
-        </label>
-        <label class="ag-col-4"> Nome
-          <input type="text" name="nome" placeholder="Nome do cliente/contato">
-        </label>
-        <label class="ag-col-4"> Telefone
-          <input type="text" name="telefone" placeholder="(xx) xxxxx-xxxx">
-        </label>
-        <label class="ag-col-4 ag-datetime"> Data/Hora
-          <div class="input-group">
-            <input type="datetime-local" name="dataHora" required>
-            <button type="button" class="append calendar-btn" title="Escolher data/hora" aria-label="Escolher data/hora">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2v2M17 2v2M4 7h16M5 11h14M5 16h8" stroke="#0f2747" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </button>
+      <form id="ag-form" class="ag-form ag-form-table">
+        <div class="ag-row">
+          <div class="ag-cell">
+            <label>Tipo</label>
+            <select name="tipo">
+              <option value="test-drive">Test-Drive</option>
+              <option value="vistoria">Vistoria</option>
+              <option value="evento">Evento</option>
+              <option value="outro">Outro</option>
+            </select>
           </div>
-        </label>
-        <label class="ag-notas"> Notas
-          <input type="text" name="notas" placeholder="Observações, veículo, etc.">
-        </label>
+          <div class="ag-cell">
+            <label>Prioridade</label>
+            <select name="prioridade">
+              <option value="azul">Azul (baixa)</option>
+              <option value="amarelo">Amarelo (média)</option>
+              <option value="vermelho">Vermelho (alta)</option>
+            </select>
+          </div>
+          <div class="ag-cell ag-span-2">
+            <label>Título</label>
+            <input type="text" name="titulo" placeholder="ex.: Test-drive do João">
+          </div>
+        </div>
+
+        <div class="ag-row">
+          <div class="ag-cell">
+            <label>Nome</label>
+            <input type="text" name="nome" placeholder="Nome do cliente/contato">
+          </div>
+          <div class="ag-cell">
+            <label>Telefone</label>
+            <input type="text" name="telefone" placeholder="(xx) xxxxx-xxxx">
+          </div>
+          <div class="ag-cell ag-datetime">
+            <label>Data/Hora</label>
+            <div class="input-group">
+              <input type="datetime-local" name="dataHora" required>
+              <button type="button" class="append calendar-btn" title="Escolher data/hora" aria-label="Escolher data/hora">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2v2M17 2v2M4 7h16M5 11h14M5 16h8" stroke="#0f2747" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ag-row">
+          <div class="ag-cell ag-span-3">
+            <label>Notas</label>
+            <input type="text" name="notas" placeholder="Observações, veículo, etc.">
+          </div>
+        </div>
+
         <div class="ag-form-actions">
           <button type="submit" class="btn-primary">Adicionar</button>
           <button type="button" id="ag-recarregar" class="btn-ghost">Recarregar</button>
@@ -307,7 +326,6 @@ export async function renderAgendamentos() {
   const tbody = container.querySelector('tbody');
   const form = container.querySelector('#ag-form');
   const btnReload = container.querySelector('#ag-recarregar');
-  const btnNovo = container.querySelector('#ag-novo');
     try {
         const resp = await fetch(`${API_BASE}/agendamentos`, { headers: authHeaders() });
         if (resp.status === 401 || resp.status === 403) { window.location.href = 'login.html'; return; }
@@ -321,25 +339,10 @@ export async function renderAgendamentos() {
             if (input && typeof input.showPicker === 'function') input.showPicker(); else input?.focus();
           });
         });
-        // Ação: Novo agendamento (preset + scroll)
-        if (btnNovo) {
-          btnNovo.addEventListener('click', () => {
-            if (!form) return;
-            form.reset();
-            // padrões úteis
-            if (form.tipo) form.tipo.value = 'test-drive';
-            if (form.prioridade) form.prioridade.value = 'azul';
-            // próxima hora (minutos zerados)
-            const now = new Date();
-            const next = new Date(now.getTime() + 60*60*1000);
-            next.setMinutes(0,0,0);
-            const localISO = new Date(next.getTime() - next.getTimezoneOffset()*60000).toISOString().slice(0,16);
-            const dh = form.querySelector('input[name="dataHora"]');
-            if (dh) dh.value = localISO;
-            const titulo = form.querySelector('input[name="titulo"]');
-            if (titulo) titulo.focus();
-            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          });
+        // Define alguns padrões úteis ao carregar (para facilitar o preenchimento)
+        if (form) {
+          if (form.tipo) form.tipo.value = form.tipo.value || 'test-drive';
+          if (form.prioridade) form.prioridade.value = form.prioridade.value || 'azul';
         }
         // Submit do formulário
         form.addEventListener('submit', async (e) => {
