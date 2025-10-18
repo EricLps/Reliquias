@@ -340,9 +340,26 @@ body {
   align-items: end;
   margin-bottom: 12px;
 }
-.ag-form > label { grid-column: span 2; }
-.ag-form > label:nth-child(3) { grid-column: span 4; } /* Título maior */
-.ag-form > label:nth-child(6) { grid-column: span 2; } /* Data/Hora */
+.ag-form > label { grid-column: span 3; }
+.ag-form .ag-col-2 { grid-column: span 2; }
+.ag-form .ag-col-3 { grid-column: span 3; }
+.ag-form .ag-col-4 { grid-column: span 4; }
+.ag-form .ag-col-6 { grid-column: span 6; }
+.ag-form .ag-col-12 { grid-column: 1 / -1; }
+.ag-form .ag-datetime .input-group { display:flex; align-items:center; }
+.ag-form .input-group input { flex: 1 1 auto; }
+.ag-form .input-group .append {
+  margin-left: 6px;
+  background: #eef2f7;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 0.48rem 0.55rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ag-form .input-group .append:hover { background:#e7edf6; }
 .ag-form .ag-notas { grid-column: 1 / -1; }
 .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; }
 
@@ -355,7 +372,7 @@ body {
 @media (max-width: 900px) {
   .ag-filters > label { grid-column: span 6; }
   .ag-form > label { grid-column: span 6; }
-  .ag-form > label:nth-child(3) { grid-column: span 12; }
+  .ag-form .ag-col-6 { grid-column: span 12; }
 }
 @media (max-width: 600px) {
   .ag-filters > label, .ag-form > label { grid-column: 1 / -1; }

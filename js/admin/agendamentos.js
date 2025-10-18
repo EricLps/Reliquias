@@ -219,7 +219,7 @@ export async function renderAgendamentos() {
         </div>
       </div>
       <form id="ag-form" class="ag-form">
-        <label> Tipo
+        <label class="ag-col-3"> Tipo
           <select name="tipo">
             <option value="test-drive">Test-Drive</option>
             <option value="vistoria">Vistoria</option>
@@ -227,24 +227,29 @@ export async function renderAgendamentos() {
             <option value="outro">Outro</option>
           </select>
         </label>
-        <label> Prioridade
+        <label class="ag-col-3"> Prioridade
           <select name="prioridade">
             <option value="azul">Azul (baixa)</option>
             <option value="amarelo">Amarelo (média)</option>
             <option value="vermelho">Vermelho (alta)</option>
           </select>
         </label>
-        <label> Título
+        <label class="ag-col-6"> Título
           <input type="text" name="titulo" placeholder="ex.: Test-drive do João">
         </label>
-        <label> Nome
+        <label class="ag-col-4"> Nome
           <input type="text" name="nome" placeholder="Nome do cliente/contato">
         </label>
-        <label> Telefone
+        <label class="ag-col-4"> Telefone
           <input type="text" name="telefone" placeholder="(xx) xxxxx-xxxx">
         </label>
-        <label> Data/Hora
-          <input type="datetime-local" name="dataHora" required>
+        <label class="ag-col-4 ag-datetime"> Data/Hora
+          <div class="input-group">
+            <input type="datetime-local" name="dataHora" required>
+            <button type="button" class="append calendar-btn" title="Escolher data/hora" aria-label="Escolher data/hora">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2v2M17 2v2M4 7h16M5 11h14M5 16h8" stroke="#0f2747" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          </div>
         </label>
         <label class="ag-notas"> Notas
           <input type="text" name="notas" placeholder="Observações, veículo, etc.">
@@ -281,6 +286,13 @@ export async function renderAgendamentos() {
         __ag_cache = await resp.json();
         bindFilters(container);
         renderRows(applyFilters(__ag_cache, container), tbody);
+        // Botão de calendário: abre o seletor nativo
+        container.querySelectorAll('.calendar-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const input = btn.closest('.input-group')?.querySelector('input[type="datetime-local"]');
+            if (input && typeof input.showPicker === 'function') input.showPicker(); else input?.focus();
+          });
+        });
         // Ação: Novo agendamento (preset + scroll)
         if (btnNovo) {
           btnNovo.addEventListener('click', () => {
