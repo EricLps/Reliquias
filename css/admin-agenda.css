@@ -26,7 +26,8 @@
 .admin-agenda .ag-form .ag-col-6 { grid-column: span 6; }
 .admin-agenda .ag-form .ag-col-12 { grid-column: 1 / -1; }
 .admin-agenda .ag-form .ag-notas { grid-column: 1 / -1; }
-.admin-agenda .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; margin-top:8px; }
+.admin-agenda .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; margin-top:8px; align-items:center; }
+.admin-agenda .ag-form .ag-form-actions .btn-primary { width:auto; min-width:140px; }
 
 /* Input group (Data/Hora) */
 .admin-agenda .ag-form .ag-datetime .input-group { display:flex; align-items:center; }
@@ -53,7 +54,7 @@
 }
 
 /* Botões */
-.admin-agenda .btn-primary { background:linear-gradient(90deg, #e7d7a7 0%, #c9a74a 100%); color:#1a2238; border:1px solid #c9a74a; border-radius:10px; padding:.5rem 1rem; font-weight:700; cursor:pointer; }
+.admin-agenda .btn-primary { background:linear-gradient(90deg, #e7d7a7 0%, #c9a74a 100%); color:#1a2238; border:1px solid #c9a74a; border-radius:10px; padding:.4rem .85rem; font-weight:700; cursor:pointer; font-size:.95rem; }
 .admin-agenda .btn-primary:hover { filter:brightness(.98); }
 .admin-agenda .btn-ghost { background:transparent; color:#1a2238; border:1px solid #e5e7eb; border-radius:10px; padding:.5rem .9rem; cursor:pointer; }
 .admin-agenda .btn-ghost:hover { background:#f8f7f3; }

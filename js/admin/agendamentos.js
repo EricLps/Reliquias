@@ -211,43 +211,6 @@ export async function renderAgendamentos() {
       <div class="ag-header">
         <h3>Agenda / Agendamentos</h3>
       </div>
-  <div class="ag-filters">
-        <label>Tipo
-          <select id="f-tipo">
-            <option value="all">Todos</option>
-            <option value="test-drive">Test-Drive</option>
-            <option value="vistoria">Vistoria</option>
-            <option value="evento">Evento</option>
-            <option value="outro">Outro</option>
-          </select>
-        </label>
-        <label>Status
-          <select id="f-status">
-            <option value="all">Todos</option>
-            <option value="pendente">Pendente</option>
-            <option value="confirmado">Confirmado</option>
-            <option value="cancelado">Cancelado</option>
-          </select>
-        </label>
-        <label>Prioridade
-          <select id="f-prio">
-            <option value="all">Todas</option>
-            <option value="azul">Azul</option>
-            <option value="amarelo">Amarelo</option>
-            <option value="vermelho">Vermelho</option>
-          </select>
-        </label>
-        <label>Período
-          <select id="f-range">
-            <option value="all">Todos</option>
-            <option value="7">Próximos 7 dias</option>
-            <option value="30">Próximos 30 dias</option>
-          </select>
-        </label>
-        <div class="ag-actions-inline">
-          <button type="button" id="f-clear" class="btn-ghost">Limpar</button>
-        </div>
-      </div>
       <form id="ag-form" class="ag-form ag-form-table">
         <div class="ag-row">
           <div class="ag-cell">
@@ -286,9 +249,6 @@ export async function renderAgendamentos() {
             <label>Data/Hora</label>
             <div class="input-group">
               <input type="datetime-local" name="dataHora" required>
-              <button type="button" class="append calendar-btn" title="Escolher data/hora" aria-label="Escolher data/hora">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 2v2M17 2v2M4 7h16M5 11h14M5 16h8" stroke="#0f2747" stroke-width="1.5" stroke-linecap="round"/></svg>
-              </button>
             </div>
           </div>
         </div>
@@ -305,6 +265,43 @@ export async function renderAgendamentos() {
           <button type="button" id="ag-recarregar" class="btn-ghost">Recarregar</button>
         </div>
       </form>
+      <div class="ag-filters">
+        <label>Tipo
+          <select id="f-tipo">
+            <option value="all">Todos</option>
+            <option value="test-drive">Test-Drive</option>
+            <option value="vistoria">Vistoria</option>
+            <option value="evento">Evento</option>
+            <option value="outro">Outro</option>
+          </select>
+        </label>
+        <label>Status
+          <select id="f-status">
+            <option value="all">Todos</option>
+            <option value="pendente">Pendente</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </label>
+        <label>Prioridade
+          <select id="f-prio">
+            <option value="all">Todas</option>
+            <option value="azul">Azul</option>
+            <option value="amarelo">Amarelo</option>
+            <option value="vermelho">Vermelho</option>
+          </select>
+        </label>
+        <label>Período
+          <select id="f-range">
+            <option value="all">Todos</option>
+            <option value="7">Próximos 7 dias</option>
+            <option value="30">Próximos 30 dias</option>
+          </select>
+        </label>
+        <div class="ag-actions-inline">
+          <button type="button" id="f-clear" class="btn-ghost">Limpar</button>
+        </div>
+      </div>
 
   <table id="agendamentos-table" class="admin-table">
         <thead>
@@ -332,13 +329,6 @@ export async function renderAgendamentos() {
         __ag_cache = await resp.json();
         bindFilters(container);
         renderRows(applyFilters(__ag_cache, container), tbody);
-        // Botão de calendário: abre o seletor nativo
-        container.querySelectorAll('.calendar-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const input = btn.closest('.input-group')?.querySelector('input[type="datetime-local"]');
-            if (input && typeof input.showPicker === 'function') input.showPicker(); else input?.focus();
-          });
-        });
         // Define alguns padrões úteis ao carregar (para facilitar o preenchimento)
         if (form) {
           if (form.tipo) form.tipo.value = form.tipo.value || 'test-drive';
