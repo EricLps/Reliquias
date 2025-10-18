@@ -177,6 +177,7 @@ export async function renderAgendamentos() {
     if (!container) return;
     container.innerHTML = `
     <section class="admin-agenda">
+      <div class="ag-container">
       <div class="ag-header">
         <h3>Agenda / Agendamentos</h3>
         <button type="button" id="ag-novo" class="btn-ghost">Novo agendamento</button>
@@ -260,7 +261,7 @@ export async function renderAgendamentos() {
         </div>
       </form>
 
-      <table id="agendamentos-table" class="admin-table">
+  <table id="agendamentos-table" class="admin-table">
         <thead>
           <tr>
             <th>Quando</th>
@@ -274,6 +275,7 @@ export async function renderAgendamentos() {
         </thead>
         <tbody><tr><td colspan="7">Carregando...</td></tr></tbody>
       </table>
+      </div>
     </section>
     `;
   const tbody = container.querySelector('tbody');

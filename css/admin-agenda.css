@@ -1,0 +1,64 @@
+/* Escopo dedicado da Agenda Admin */
+.admin-agenda { width: 100%; }
+.admin-agenda .ag-container { background:#fff; border-radius:14px; box-shadow:0 8px 28px rgba(16,24,40,.06); padding: 1.2rem; }
+
+/* Títulos e textos */
+.admin-agenda h2 { color:#c9a74a; font-weight:900; margin:0 0 1rem; }
+.admin-agenda h3 { color:#0f2747; margin:0; font-size:1.1rem; }
+.admin-agenda label { font-weight:700; color:#0f2747; font-size:.92rem; }
+.admin-agenda input, .admin-agenda select, .admin-agenda textarea { background:#fff; border:1px solid #d1d5db; border-radius:10px; padding:.55rem .7rem; font-size:.98rem; color:#111827; box-shadow:0 1px 2px rgba(0,0,0,.03); }
+.admin-agenda input:focus, .admin-agenda select:focus, .admin-agenda textarea:focus { outline:2px solid #e7d7a7; border-color:#c9a74a; }
+
+/* Header e ações */
+.admin-agenda .ag-header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin:0 0 12px; }
+.admin-agenda .ag-header .btn-ghost { align-self:flex-start; }
+
+/* Filtros e formulário (12 col grid) */
+.admin-agenda .ag-filters, .admin-agenda .ag-form { display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); gap:10px; align-items:end; }
+.admin-agenda .ag-filters { margin-bottom: 10px; }
+.admin-agenda .ag-filters > label { grid-column: span 3; }
+.admin-agenda .ag-filters .ag-actions-inline { grid-column: 1 / -1; display:flex; gap:8px; }
+
+.admin-agenda .ag-form > label { grid-column: span 3; }
+.admin-agenda .ag-form .ag-col-2 { grid-column: span 2; }
+.admin-agenda .ag-form .ag-col-3 { grid-column: span 3; }
+.admin-agenda .ag-form .ag-col-4 { grid-column: span 4; }
+.admin-agenda .ag-form .ag-col-6 { grid-column: span 6; }
+.admin-agenda .ag-form .ag-col-12 { grid-column: 1 / -1; }
+.admin-agenda .ag-form .ag-notas { grid-column: 1 / -1; }
+.admin-agenda .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; }
+
+/* Input group (Data/Hora) */
+.admin-agenda .ag-form .ag-datetime .input-group { display:flex; align-items:center; }
+.admin-agenda .ag-form .input-group input { flex:1 1 auto; }
+.admin-agenda .ag-form .input-group .append { margin-left:6px; background:#eef2f7; border:1px solid #d1d5db; border-radius:10px; padding:.48rem .55rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; }
+.admin-agenda .ag-form .input-group .append:hover { background:#e7edf6; }
+
+/* Botões */
+.admin-agenda .btn-primary { background:linear-gradient(90deg, #e7d7a7 0%, #c9a74a 100%); color:#1a2238; border:1px solid #c9a74a; border-radius:10px; padding:.5rem 1rem; font-weight:700; cursor:pointer; }
+.admin-agenda .btn-primary:hover { filter:brightness(.98); }
+.admin-agenda .btn-ghost { background:transparent; color:#1a2238; border:1px solid #e5e7eb; border-radius:10px; padding:.5rem .9rem; cursor:pointer; }
+.admin-agenda .btn-ghost:hover { background:#f8f7f3; }
+.admin-agenda .btn-ghost:focus, .admin-agenda .btn-primary:focus { outline:2px solid #e7d7a7; }
+
+/* Tabela */
+.admin-agenda .admin-table { width:100%; border-collapse:collapse; margin-top: 1rem; background:#f9fafb; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(16,24,40,.04); }
+.admin-agenda .admin-table th, .admin-agenda .admin-table td { padding:.75rem .9rem; text-align:left; }
+.admin-agenda .admin-table th { background:#eef2f7; color:#0f2747; font-weight:700; font-size:.95rem; vertical-align:middle; }
+.admin-agenda .admin-table tr { border-bottom:1px solid #e5e7eb; }
+.admin-agenda .admin-table tr:last-child { border-bottom:none; }
+.admin-agenda .admin-table td { background:#fff; color:#1f2937; font-size:.95rem; vertical-align:top; }
+
+/* Pontos de prioridade */
+.admin-agenda .ag-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+.admin-agenda .ag-azul{ background:#2b6cb0; } .admin-agenda .ag-amarelo{ background:#d69e2e; } .admin-agenda .ag-vermelho{ background:#c53030; }
+
+/* Responsivo */
+@media (max-width: 900px){
+  .admin-agenda .ag-filters > label { grid-column: span 6; }
+  .admin-agenda .ag-form > label { grid-column: span 6; }
+  .admin-agenda .ag-form .ag-col-6 { grid-column: span 12; }
+}
+@media (max-width: 600px){
+  .admin-agenda .ag-filters > label, .admin-agenda .ag-form > label { grid-column: 1 / -1; }
+}
