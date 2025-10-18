@@ -2,8 +2,15 @@
 server/node_modules/
 server/package-lock.json
 
-# Env
+# Env (NUNCA versionar .env)
 server/.env
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+!.env.example
+!server/.env.example
 
 # OS/Editor
 .DS_Store
