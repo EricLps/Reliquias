@@ -179,7 +179,7 @@ export async function renderAgendamentos() {
     <section class="admin-agenda">
       <div class="ag-header">
         <h3>Agenda / Agendamentos</h3>
-        <button type="button" id="ag-novo" class="admin-add-btn">Novo agendamento</button>
+        <button type="button" id="ag-novo" class="btn-ghost">Novo agendamento</button>
       </div>
   <div class="ag-filters">
         <label>Tipo

@@ -70,6 +70,21 @@ body {
   margin-bottom: 1.5rem;
   color: #c9a74a;
 }
+.admin-section h3 { font-size: 1.15rem; margin: 0; color:#0f2747; }
+.admin-section label { font-weight: 700; color:#0f2747; font-size: 0.92rem; }
+.admin-section input, .admin-section select, .admin-section textarea {
+  background:#fff;
+  border:1px solid #d1d5db;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.98rem;
+  color:#111827;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.admin-section input:focus, .admin-section select:focus, .admin-section textarea:focus {
+  outline: 2px solid #e7d7a7;
+  border-color: #c9a74a;
+}
 
 .admin-section {
   margin-bottom: 2.5rem;
@@ -95,6 +110,7 @@ body {
   font-weight: 700;
   font-size: 0.95rem;
 }
+.admin-table thead th { vertical-align: middle; }
 .admin-table tr {
   border-bottom: 1px solid #e5e7eb;
 }
@@ -106,6 +122,7 @@ body {
   color: #1f2937;
   font-size: 0.95rem;
 }
+.admin-table tbody td { vertical-align: top; }
 
 .admin-section .botao-comprar {
   max-width: 220px;
@@ -305,6 +322,7 @@ body {
 .admin-agenda { width: 100%; }
 .ag-header { display:flex; justify-content: space-between; align-items:center; gap:12px; margin: 0 0 12px; }
 .ag-header h3 { margin: 0; }
+.ag-header .btn-ghost { align-self:flex-start; }
 .ag-filters {
   display: grid;
   grid-template-columns: repeat(12, minmax(0,1fr));
@@ -327,6 +345,12 @@ body {
 .ag-form > label:nth-child(6) { grid-column: span 2; } /* Data/Hora */
 .ag-form .ag-notas { grid-column: 1 / -1; }
 .ag-form .ag-form-actions { grid-column: 1 / -1; display:flex; gap:8px; }
+
+/* Seção "Adicionar" com barra visual coerente */
+.admin-table + .admin-table { margin-top: 1.25rem; }
+.ag-form-actions .btn-primary { min-width: 180px; }
+.ag-actions-inline .btn-ghost, .ag-form-actions .btn-ghost { border-color:#d1d5db; color:#374151; }
+.btn-ghost:focus, .btn-primary:focus { outline: 2px solid #e7d7a7; }
 
 @media (max-width: 900px) {
   .ag-filters > label { grid-column: span 6; }
