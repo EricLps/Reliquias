@@ -16,26 +16,6 @@
   <script type="module">
     import { renderAdminNavbar } from './js/admin/adminNavbar.js';
     document.body.insertAdjacentHTML('afterbegin', renderAdminNavbar());
-    // Header actions: env badge + logout
-    const badge = document.getElementById('env-badge');
-    if (badge) {
-      const host = window.location.hostname;
-      let label = 'DEV';
-      let cls = 'dev';
-      if (/vercel\.app$/i.test(host)) { label = 'VERCEL'; cls = 'vercel'; }
-      else if (!/^(localhost|127\.0\.0\.1)$/i.test(host)) { label = 'PROD'; cls = 'prod'; }
-      badge.textContent = label;
-      badge.classList.add(cls);
-    }
-    const logoutBtn = document.getElementById('btn-logout');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('session');
-        window.location.href = 'login.html';
-      });
-    }
   </script>
   <script type="module" src="js/admin/admin.js"></script>
 </body>

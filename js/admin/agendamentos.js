@@ -177,11 +177,11 @@ export async function renderAgendamentos() {
     if (!container) return;
     container.innerHTML = `
     <section class="admin-agenda">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;gap:10px;flex-wrap:wrap;">
-        <h3 style="margin:0">Agenda / Agendamentos</h3>
+      <div class="ag-header">
+        <h3>Agenda / Agendamentos</h3>
         <button type="button" id="ag-novo" class="admin-add-btn">Novo agendamento</button>
       </div>
-      <div class="admin-form-inline" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:end;margin: 0 0 10px;">
+  <div class="ag-filters">
         <label>Tipo
           <select id="f-tipo">
             <option value="all">Todos</option>
@@ -214,11 +214,11 @@ export async function renderAgendamentos() {
             <option value="30">Próximos 30 dias</option>
           </select>
         </label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <button type="button" id="f-clear" class="admin-add-btn" style="background:#eee;color:#333;">Limpar</button>
+        <div class="ag-actions-inline">
+          <button type="button" id="f-clear" class="btn-ghost">Limpar</button>
         </div>
       </div>
-      <form id="ag-form" class="admin-form-inline" style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;margin-bottom:12px;">
+      <form id="ag-form" class="ag-form">
         <label> Tipo
           <select name="tipo">
             <option value="test-drive">Test-Drive</option>
@@ -246,12 +246,12 @@ export async function renderAgendamentos() {
         <label> Data/Hora
           <input type="datetime-local" name="dataHora" required>
         </label>
-        <label style="grid-column:1 / -1"> Notas
+        <label class="ag-notas"> Notas
           <input type="text" name="notas" placeholder="Observações, veículo, etc.">
         </label>
-        <div style="grid-column:1 / -1;display:flex;gap:8px;">
-          <button type="submit" class="admin-add-btn">Adicionar</button>
-          <button type="button" id="ag-recarregar" class="admin-add-btn" style="background:#eee;color:#333;">Recarregar</button>
+        <div class="ag-form-actions">
+          <button type="submit" class="btn-primary">Adicionar</button>
+          <button type="button" id="ag-recarregar" class="btn-ghost">Recarregar</button>
         </div>
       </form>
 
