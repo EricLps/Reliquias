@@ -69,6 +69,15 @@ export async function renderCatalog(main, destaque = false, filtro = null) {
     filtered = filtered.filter(v => v.marca === selectedMarca);
   }
 
+  // Fallback: se na home (destaque=true) nada foi marcado como destaque,
+  // mostramos todos os veículos para não parecer vazio até um clique de filtro.
+  if (destaque && (!filtered || filtered.length === 0)) {
+    filtered = veiculos;
+    if (selectedMarca && selectedMarca !== 'all') {
+      filtered = filtered.filter(v => v.marca === selectedMarca);
+    }
+  }
+
   if (!filtered.length) {
     catalogDiv.innerHTML = '<p>Nenhum carro encontrado.</p>';
   } else {
