@@ -1,4 +1,6 @@
 import { renderAdminVeiculos, renderAdminLeads, renderAdminAgendamentos, renderAdminRelatorios } from './adminViews.js';
+import { renderLeads } from './leads.js';
+import { renderAgendamentos } from './agendamentos.js';
 import { API_BASE } from '../config.js';
 
 function ensureAuthenticated() {
@@ -40,18 +42,34 @@ function setActiveNav(hash) {
   if (link) link.classList.add('active');
 }
 
+function renderIntoMain(html, afterRender) {
+  const main = document.getElementById('admin-content');
+  if (!main) return;
+  main.innerHTML = html;
+  if (typeof afterRender === 'function') afterRender();
+}
+
 function renderAdminPage() {
   if (!ensureAuthenticated()) return;
   const hash = window.location.hash || '#admin-veiculos';
   setActiveNav(hash);
   const main = document.getElementById('admin-content');
   if (hash === '#admin-veiculos') {
-    main.innerHTML = renderAdminVeiculos();
-    setupModalVeiculoEvents();
-    listarVeiculos();
-  } else if (hash === '#admin-leads') renderAdminLeads();
-  else if (hash === '#admin-agendamentos') main.innerHTML = renderAdminAgendamentos();
-  else if (hash === '#admin-relatorios') main.innerHTML = renderAdminRelatorios();
+    renderIntoMain(renderAdminVeiculos(), () => {
+      setupModalVeiculoEvents();
+      listarVeiculos();
+    });
+  } else if (hash === '#admin-leads') {
+    renderIntoMain(renderAdminLeads(), () => {
+      renderLeads();
+    });
+  } else if (hash === '#admin-agendamentos') {
+    renderIntoMain(renderAdminAgendamentos(), () => {
+      renderAgendamentos();
+    });
+  } else if (hash === '#admin-relatorios') {
+    renderIntoMain(renderAdminRelatorios());
+  }
   else main.innerHTML = '<p>Página não encontrada.</p>';
 }
 
