@@ -40,6 +40,20 @@
 .admin-agenda .btn-ghost { background:transparent; color:#1a2238; border:1px solid #e5e7eb; border-radius:10px; padding:.5rem .9rem; cursor:pointer; }
 .admin-agenda .btn-ghost:hover { background:#f8f7f3; }
 .admin-agenda .btn-ghost:focus, .admin-agenda .btn-primary:focus { outline:2px solid #e7d7a7; }
+.admin-agenda .btn-secondary { background:#eef2f7; color:#0f2747; border:1px solid #d1d5db; border-radius:10px; padding:.45rem .8rem; cursor:pointer; }
+.admin-agenda .btn-secondary:hover { background:#e7edf6; }
+.admin-agenda .btn-danger { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; border-radius:10px; padding:.45rem .8rem; cursor:pointer; }
+.admin-agenda .btn-danger:hover { background:#fecaca; }
+
+/* Botão apenas ícone */
+.admin-agenda .btn-icon { padding:.4rem; width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; border-radius:10px; }
+.admin-agenda .btn-icon svg { display:block; }
+
+/* Badges de status */
+.admin-agenda .badge { display:inline-flex; align-items:center; gap:6px; padding:.25rem .5rem; border-radius:999px; font-size:.82rem; font-weight:700; border:1px solid transparent; text-transform:capitalize; }
+.admin-agenda .badge-pendente { background:#fff7ed; color:#9a3412; border-color:#fed7aa; }
+.admin-agenda .badge-confirmado { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+.admin-agenda .badge-cancelado { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
 
 /* Tabela */
 .admin-agenda .admin-table { width:100%; border-collapse:collapse; margin-top: 1rem; background:#f9fafb; border-radius:10px; overflow:hidden; box-shadow:0 1px 2px rgba(16,24,40,.04); }
@@ -48,6 +62,7 @@
 .admin-agenda .admin-table tr { border-bottom:1px solid #e5e7eb; }
 .admin-agenda .admin-table tr:last-child { border-bottom:none; }
 .admin-agenda .admin-table td { background:#fff; color:#1f2937; font-size:.95rem; vertical-align:top; }
+.admin-agenda .ag-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
 
 /* Pontos de prioridade */
 .admin-agenda .ag-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle; }

@@ -119,6 +119,8 @@ function renderRows(lista, tbody) {
     const tr = document.createElement('tr');
     const dt = item.dataHora ? new Date(item.dataHora) : null;
     const prioridadeDot = `<span class="ag-dot ag-${item.prioridade || 'azul'}"></span>`;
+    const status = item.status || 'pendente';
+    const statusClass = `badge badge-${status}`;
     tr.innerHTML = `
       <td>${dt ? dt.toLocaleString('pt-BR') : ''}</td>
       <td>
@@ -132,13 +134,22 @@ function renderRows(lista, tbody) {
       <td>${prioridadeDot} ${item.prioridade || 'azul'}</td>
       <td><small>${item.origem || ''}</small></td>
       <td>
-        <span class="ag-status">${item.status || 'pendente'}</span>
+        <span class="${statusClass}">${status}</span>
       </td>
       <td>
         <div class="ag-actions">
-          <button class="btn-acao" data-id="${item._id}" data-st="confirmado">Confirmar</button>
-          <button class="btn-acao" data-id="${item._id}" data-st="cancelado">Cancelar</button>
-          <button class="btn-edit" data-id="${item._id}">Editar</button>
+          <button class="btn-secondary btn-icon btn-acao" title="Confirmar" aria-label="Confirmar" data-id="${item._id}" data-st="confirmado">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="#0f2747" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn-ghost btn-icon btn-acao" title="Cancelar" aria-label="Cancelar" data-id="${item._id}" data-st="cancelado">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L6 18M6 6l12 12" stroke="#0f2747" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <button class="btn-ghost btn-icon btn-edit" title="Editar" aria-label="Editar" data-id="${item._id}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20h9" stroke="#0f2747" stroke-width="1.8" stroke-linecap="round"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" stroke="#0f2747" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn-danger btn-icon btn-delete" title="Excluir" aria-label="Excluir" data-id="${item._id}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18" stroke="#991b1b" stroke-width="1.8" stroke-linecap="round"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#991b1b" stroke-width="1.5"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="#991b1b" stroke-width="1.5"/><path d="M10 11v6M14 11v6" stroke="#991b1b" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
         </div>
       </td>
     `;
@@ -168,6 +179,21 @@ function renderRows(lista, tbody) {
       const id = btn.getAttribute('data-id');
       const item = __ag_cache.find(x => x._id === id);
       if (item) openEditModal(item, document.querySelector('#admin-agendamentos-lista'));
+    });
+  });
+  tbody.querySelectorAll('.ag-actions .btn-delete').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.getAttribute('data-id');
+      if (!id) return;
+      if (!confirm('Excluir este agendamento? Esta ação não pode ser desfeita.')) return;
+      try {
+        const resp = await fetch(`${API_BASE}/agendamentos/${id}`, { method: 'DELETE', headers: authHeaders() });
+        if (!resp.ok && resp.status !== 204) throw new Error('Falha ao excluir');
+        await renderAgendamentos();
+      } catch (e) {
+        console.error(e);
+        alert('Não foi possível excluir.');
+      }
     });
   });
 }

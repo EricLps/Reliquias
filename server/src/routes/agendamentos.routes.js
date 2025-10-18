@@ -65,3 +65,15 @@ router.patch('/:id', verifyToken, requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Erro ao atualizar agendamento' });
   }
 });
+
+// Excluir agendamento (admin)
+router.delete('/:id', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const ag = await Agendamento.findByIdAndDelete(req.params.id);
+    if (!ag) return res.status(404).json({ error: 'Não encontrado' });
+    res.status(204).send();
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao excluir agendamento' });
+  }
+});
