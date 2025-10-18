@@ -12,6 +12,10 @@ export function renderAdminNavbar() {
           <li><a href="#admin-relatorios">Relatórios</a></li>
           <li><a href="index.html">Voltar ao site</a></li>
         </ul>
+        <div class="admin-header-actions">
+          <span id="env-badge" class="env-badge">ENV</span>
+          <button id="btn-logout" class="admin-add-btn" style="margin-left:10px;">Sair</button>
+        </div>
       </nav>
     </header>
   `;

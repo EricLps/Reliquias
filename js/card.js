@@ -9,6 +9,7 @@ export function createCarCard(car) {
     ? `${API_BASE}/veiculos/imagem/${principal.fileId}`
     : (principal?.url || car.imagem || 'https://via.placeholder.com/800x450?text=Ve%C3%ADculo');
   const id = car._id || car.id;
+  const desc = car.descricaoCurta || car.descricao || '';
   card.innerHTML = `
     <div class="card-img">
       <img src="${imgUrl}" alt="${car.marca} ${car.modelo}" loading="lazy" decoding="async" width="800" height="450">
@@ -17,7 +18,7 @@ export function createCarCard(car) {
       <div class="marca">${car.marca}</div>
       <h3 class="modelo">${car.modelo}</h3>
       <div class="ano-preco">${car.ano} • R$ ${(Number(car.preco)||0).toLocaleString('pt-BR')}</div>
-      <p class="descricao">${car.descricao || ''}</p>
+  <p class="descricao">${desc}</p>
       <button class="botao-comprar">Mais informações</button>
     </div>
   `;

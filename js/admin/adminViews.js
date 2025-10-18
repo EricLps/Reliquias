@@ -20,7 +20,28 @@ export function renderAdminVeiculos() {
           <label>Ano<input type="number" name="ano" required min="1900" max="2100"></label>
           <label>Preço (R$)<input type="text" name="preco" required placeholder="0,00"></label>
           <label>Cor<input type="text" name="cor" maxlength="24"></label>
+          <label>Carroceria
+            <select name="carroceria">
+              <option value="">Selecionar</option>
+              <option>Sedan</option>
+              <option>Hatch</option>
+              <option>SUV</option>
+              <option>Pickup</option>
+              <option>Coupe</option>
+              <option>Conversível</option>
+              <option>Wagon</option>
+              <option>Minivan</option>
+              <option>Utilitário</option>
+              <option>Outra</option>
+            </select>
+          </label>
           <label>KM<input type="text" name="km" placeholder="0"></label>
+          <label>Descrição curta
+            <input type="text" name="descricaoCurta" maxlength="160" placeholder="Resumo para aparecer no card (até ~160 caracteres)">
+          </label>
+          <label>Descrição detalhada
+            <textarea name="descricao" rows="4" placeholder="Detalhes do veículo, histórico, opcionais..."></textarea>
+          </label>
           <label>Imagens<input type="file" name="imagens" accept="image/*" multiple></label>
           <label>Imagem por URL<input type="url" name="imagemUrl" placeholder="https://..."></label>
           <label>Imagens por URL (separar por vírgula)<input type="text" name="imagensUrls" placeholder="https://..., https://..."></label>
@@ -56,7 +77,7 @@ export function renderAdminLeads() {
 
   const content = document.getElementById('admin-content');
   content.innerHTML = html;
-  renderLeads(); // Chama diretamente após inserir o HTML
+  renderLeads();
 }
 
 export function renderAdminAgendamentos() {

@@ -23,6 +23,7 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 - Configuração e execução (dev)
 - Deploy (Vercel + Render)
 - Configuração do Frontend para API (API_BASE dinâmica)
+- Configuração do WhatsApp (WHATSAPP_NUMBER)
 - Exemplos rápidos (PowerShell/curl)
 - Troubleshooting (erros comuns)
 - Personalização rápida (UI)
@@ -124,7 +125,8 @@ O Relíquias é um catálogo de veículos com:
 ```js
 {
 	marca: String!, modelo: String!, ano: Number!, preco: Number!,
-	cor?: String, km?: Number,
+	cor?: String, carroceria?: String, km?: Number,
+	descricaoCurta?: String, descricao?: String,
 	imagens: [{ fileId?: String, url?: String, principal?: Boolean }],
 	createdAt, updatedAt
 }
@@ -259,6 +261,32 @@ CORS_ORIGIN=http://localhost:5500,http://127.0.0.1:5500,https://reliquias.vercel
 2. `localStorage['API_BASE']`
 3. `<meta name="api-base">`
 4. Fallback: `http://localhost:4000/api` (dev) ou `/api` (prod)
+
+---
+
+## 💬 WhatsApp no Frontend (Agendar Test-Drive)
+
+O botão “Agendar Test-Drive” do painel lateral abre o WhatsApp da concessionária com mensagem pré-preenchida.
+
+Número do WhatsApp (configuração no frontend):
+1. Janela (inline):
+	```html
+	<script>window.__WHATSAPP_NUMBER__ = '99999999'</script>
+	```
+2. Meta tag:
+	```html
+	<meta name="whatsapp-number" content="99999999" />
+	```
+3. localStorage (no console do navegador):
+	```js
+	localStorage.setItem('WHATSAPP_NUMBER', '99999999')
+	```
+
+Formato: apenas dígitos com DDI (ex.: 55 + DDD + número). Ex.: 5511999999999. Usei 99999999 aqui apenas como exemplo.
+
+Implementação:
+- `js/config.js`: `WHATSAPP_NUMBER` e `buildWhatsAppLink(message, number?)`
+- `js/sidepanel.js`: usa `buildWhatsAppLink` no botão “Agendar Test-Drive” e no link “Falar no WhatsApp”.
 
 ---
 

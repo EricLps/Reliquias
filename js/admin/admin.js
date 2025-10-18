@@ -79,7 +79,10 @@ function abrirModalVeiculo(edicao = false, dados = null) {
     form.ano.value = dados.ano || '';
     form.preco.value = dados.preco || '';
     form.cor.value = dados.cor || '';
+  if (form.carroceria) form.carroceria.value = dados.carroceria || '';
     form.km.value = dados.km || '';
+  if (form.descricaoCurta) form.descricaoCurta.value = dados.descricaoCurta || '';
+  if (form.descricao) form.descricao.value = dados.descricao || '';
     form.dataset.editId = dados._id || '';
     const container = document.getElementById('imagens-atuais');
     if (container) {
@@ -220,7 +223,7 @@ function setupModalVeiculoEvents() {
         if (editId) {
           if (hasNewImages || removals.length || removalsUrl.length || principalSel || principalUrl || imagemUrl || imagensUrls) {
             const fd = new FormData();
-            const campos = ['marca','modelo','ano','preco','cor','km'];
+            const campos = ['marca','modelo','ano','preco','cor','carroceria','km','descricao','descricaoCurta'];
             campos.forEach(k => { const v = formData.get(k); if (v !== null && v !== undefined && v !== '') fd.append(k, v); });
             if (removals.length) fd.append('removeImages', JSON.stringify(removals));
             if (removalsUrl.length) fd.append('removeImageUrls', JSON.stringify(removalsUrl));
@@ -237,6 +240,7 @@ function setupModalVeiculoEvents() {
             if (payload.preco !== undefined) payload.preco = precoNumber;
             if (payload.km !== undefined) payload.km = kmNumber;
             if (payload.ano !== undefined) payload.ano = Number(payload.ano);
+            // Mantém descricao/descricaoCurta conforme digitado
             resp = await fetch(`${API_BASE}/veiculos/${editId}`, {
               method: 'PUT',
               headers: authHeaders({ 'Content-Type': 'application/json' }),

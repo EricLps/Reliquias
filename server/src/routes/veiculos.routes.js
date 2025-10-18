@@ -25,7 +25,7 @@ async function uploadToGridFS(buffer, filename, contentType = 'image/webp') {
 // Criar veículo com upload e compressão de até 6 imagens
 router.post('/', verifyToken, requireAdmin, upload.array('imagens', 6), async (req, res) => {
   try {
-    const { marca, modelo, ano, preco, cor, km, principalFileId } = req.body;
+  const { marca, modelo, ano, preco, cor, carroceria, km, descricao, descricaoCurta, principalFileId } = req.body;
 
     const imagens = [];
     if (req.files && req.files.length) {
@@ -54,7 +54,7 @@ router.post('/', verifyToken, requireAdmin, upload.array('imagens', 6), async (r
       });
     }
 
-    const veiculo = await Veiculo.create({ marca, modelo, ano, preco, cor, km, imagens });
+  const veiculo = await Veiculo.create({ marca, modelo, ano, preco, cor, carroceria, km, descricao, descricaoCurta, imagens });
     res.status(201).json(veiculo);
   } catch (err) {
     console.error('Erro ao criar veículo:', err);
@@ -78,7 +78,7 @@ router.get('/:id', async (req, res) => {
 // Atualizar veículo
 router.put('/:id', verifyToken, requireAdmin, upload.array('imagens', 6), async (req, res) => {
   try {
-    const { marca, modelo, ano, preco, cor, km, principalFileId, principalUrl } = req.body;
+  const { marca, modelo, ano, preco, cor, carroceria, km, descricao, descricaoCurta, principalFileId, principalUrl } = req.body;
     let removeImages = [];
     let removeImageUrls = [];
     if (req.body.removeImages) {
@@ -108,7 +108,10 @@ router.put('/:id', verifyToken, requireAdmin, upload.array('imagens', 6), async 
     if (ano !== undefined) veiculo.ano = ano;
     if (preco !== undefined) veiculo.preco = preco;
     if (cor !== undefined) veiculo.cor = cor;
+  if (carroceria !== undefined) veiculo.carroceria = carroceria;
     if (km !== undefined) veiculo.km = km;
+  if (descricao !== undefined) veiculo.descricao = descricao;
+  if (descricaoCurta !== undefined) veiculo.descricaoCurta = descricaoCurta;
 
     // Remoção de imagens
     if (removeImages.length) {

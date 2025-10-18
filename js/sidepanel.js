@@ -1,4 +1,4 @@
-import { API_BASE } from './config.js';
+import { API_BASE, WHATSAPP_NUMBER, buildWhatsAppLink } from './config.js';
 
 async function fetchVeiculo(id) {
   const resp = await fetch(`${API_BASE}/veiculos/${id}`);
@@ -29,6 +29,12 @@ export async function openSidePanel(carId) {
   const imgUrl = principal?.fileId
     ? `${API_BASE}/veiculos/imagem/${principal.fileId}`
     : (principal?.url || car.imagem || 'https://via.placeholder.com/800x450?text=Ve%C3%ADculo');
+  const metaParts = [];
+  if (car.ano) metaParts.push(`Ano: ${car.ano}`);
+  if (car.km != null) metaParts.push(`KM: ${Number(car.km).toLocaleString('pt-BR')}`);
+  if (car.carroceria) metaParts.push(`Carroceria: ${car.carroceria}`);
+  if (car.cor) metaParts.push(`Cor: ${car.cor}`);
+  const metaLine = metaParts.join(' • ');
   panel.innerHTML = `
     <div class="side-panel-header">
       <h3>${car.marca} ${car.modelo}</h3>
@@ -36,8 +42,8 @@ export async function openSidePanel(carId) {
     </div>
     <div class="side-panel-content">
   <img src="${imgUrl}" alt="${car.marca} ${car.modelo}">
-      <div class="car-meta">Ano: ${car.ano} • Carroceria: ${car.carroceria} • R$ ${car.preco.toLocaleString('pt-BR')}</div>
-      <div class="car-desc">${car.descricao || ''}</div>
+  <div class="car-meta">${metaLine} • R$ ${car.preco.toLocaleString('pt-BR')}</div>
+  <div class="car-desc">${car.descricao || car.descricaoCurta || ''}</div>
       <div class="side-panel-simulador">
         <label for="valorEntrada">Entrada (R$):</label>
         <input type="number" id="valorEntrada" min="0" max="${car.preco}" value="0">
@@ -48,8 +54,8 @@ export async function openSidePanel(carId) {
       </div>
       <div class="side-panel-actions">
         <button id="btn-agendar" type="button">Agendar Test-Drive</button>
-        <a href="tel:+5511999999999">Ligar para a Concessionária</a>
-        <a href="https://wa.me/5511999999999?text=Tenho%20interesse%20no%20${encodeURIComponent(car.marca + ' ' + car.modelo)}" target="_blank">Falar no WhatsApp</a>
+        <a id="link-telefone" href="tel:+${WHATSAPP_NUMBER}">Ligar para a Concessionária</a>
+        <a id="link-whatsapp" href="${buildWhatsAppLink(`Tenho interesse no ${car.marca} ${car.modelo}`)}" target="_blank">Falar no WhatsApp</a>
       </div>
     </div>
   `;
@@ -75,7 +81,9 @@ export async function openSidePanel(carId) {
   };
 
   panel.querySelector('#btn-agendar').onclick = () => {
-    alert('Solicitação de agendamento enviada! Entraremos em contato.');
+    const mensagem = `Olá! Gostaria de agendar um test-drive do ${car.marca} ${car.modelo} (${car.ano}).`;
+    const url = buildWhatsAppLink(mensagem);
+    window.open(url, '_blank');
   };
 }
 

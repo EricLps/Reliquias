@@ -36,6 +36,26 @@ body {
   color: #1a2238;
 }
 
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 1rem;
+}
+.env-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1a2238;
+  background: #e7d7a7;
+  border-radius: 999px;
+  padding: 4px 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.env-badge.dev { background:#b3e5fc; }
+.env-badge.vercel { background:#c5e1a5; }
+.env-badge.prod { background:#ffd54f; }
+
 #admin-content {
   max-width: 1100px;
   margin: 2.5rem auto 2rem auto;
@@ -248,3 +268,16 @@ body {
   padding: 2px 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
+/* Agenda - prioridade visual (pontos de cor) */
+.ag-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.ag-azul { background: #2b6cb0; }
+.ag-amarelo { background: #d69e2e; }
+.ag-vermelho { background: #c53030; }

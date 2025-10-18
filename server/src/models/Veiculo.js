@@ -7,11 +7,14 @@ const VeiculoSchema = new mongoose.Schema({
   preco: { type: Number, required: true },
   cor: { type: String },
   km: { type: Number },
+  descricao: { type: String },
+  descricaoCurta: { type: String },
   imagens: [{
     fileId: { type: String }, // GridFS file id
     url: { type: String }, // opcional, caso sirva via rota
     principal: { type: Boolean, default: false }
   }],
+    carroceria: { type: String },
 }, { timestamps: true });
 
 export default mongoose.model('Veiculo', VeiculoSchema);
