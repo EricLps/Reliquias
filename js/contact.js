@@ -1,3 +1,5 @@
+import { API_BASE } from './config.js';
+
 export function renderContact(main) {
   main.innerHTML = `
     <h2>Contato / Agendamento</h2>
@@ -26,8 +28,8 @@ export function renderContact(main) {
     feedback.textContent = '';
     try {
       const data = Object.fromEntries(new FormData(form));
-      const isAgendamento = ckAgendar.checked && data.dataHora;
-      const url = isAgendamento ? 'http://localhost:4000/api/agendamentos' : 'http://localhost:4000/api/leads';
+  const isAgendamento = ckAgendar.checked && data.dataHora;
+  const url = isAgendamento ? `${API_BASE}/agendamentos` : `${API_BASE}/leads`;
       const payload = isAgendamento
         ? { nome: data.nome, email: data.email, telefone: data.telefone, dataHora: data.dataHora, status: 'pendente' }
         : { ...data, origem: 'contato' };

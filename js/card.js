@@ -28,9 +28,4 @@ export function createCarCard(car) {
   return card;
 }
 
-window.addToFavorites = function(id) {
-  let favs = JSON.parse(localStorage.getItem('favoritos')||'[]');
-  if (!favs.includes(id)) favs.push(id);
-  localStorage.setItem('favoritos', JSON.stringify(favs));
-  alert('Adicionado aos favoritos!');
-};
+// Funcionalidade de favoritos removida por solicitação.

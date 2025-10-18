@@ -89,7 +89,7 @@ function abrirModalVeiculo(edicao = false, dados = null) {
         wrap.className = 'img-item';
         wrap.innerHTML = `
           <span class="badge-principal" style="display:${img.principal ? 'inline-block' : 'none'};">PRINCIPAL</span>
-          <img src="${img.url ? img.url : (`http://localhost:4000/api/veiculos/imagem/${img.fileId}`)}" class="preview" alt="imagem">
+          <img src="${img.url ? img.url : (`${API_BASE}/veiculos/imagem/${img.fileId}`)}" class="preview" alt="imagem">
           ${img.url ? `
             <label><input type="checkbox" class="chk-remover-url" value="${img.url}"> Remover (URL)</label>
             <label><input type="radio" name="principal" class="radio-principal" value="url::${img.url}" ${img.principal ? 'checked' : ''}> Principal</label>
@@ -299,7 +299,7 @@ function renderTabelaVeiculos(veiculos = []) {
     <tbody>
       ${veiculos.map(v => `
         <tr>
-          <td><img src="${(v.imagens && v.imagens[0]) ? (v.imagens[0].url ? v.imagens[0].url : `http://localhost:4000/api/veiculos/imagem/${v.imagens[0].fileId}`) : 'https://via.placeholder.com/48x32?text=Car'}" alt="Miniatura ${v.modelo}" class="admin-thumb"></td>
+          <td><img src="${(v.imagens && v.imagens[0]) ? (v.imagens[0].url ? v.imagens[0].url : `${API_BASE}/veiculos/imagem/${v.imagens[0].fileId}`) : 'https://via.placeholder.com/48x32?text=Car'}" alt="Miniatura ${v.modelo}" class="admin-thumb"></td>
           <td>${v._id || ''}</td>
           <td>${v.marca}</td>
           <td>${v.modelo}</td>

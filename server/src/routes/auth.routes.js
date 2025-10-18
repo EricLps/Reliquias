@@ -8,7 +8,7 @@ const router = Router();
 const ADMIN_EMAIL = 'admin@reliquias.com';
 const ADMIN_PASS_HASH = bcrypt.hashSync('admin123', 8);
 
-router.post('/login', (req, res) => {
+function handleLogin(req, res) {
   const { email, senha } = req.body || {};
   if (!email || !senha) return res.status(400).json({ error: 'Email e senha são obrigatórios' });
 
@@ -17,6 +17,10 @@ router.post('/login', (req, res) => {
     return res.json({ token, user: { email: ADMIN_EMAIL, role: 'admin', nome: 'Administrador' } });
   }
   return res.status(401).json({ error: 'Credenciais inválidas' });
-});
+}
+
+// Endpoints equivalentes para contornar bloqueios de extensões de navegador
+router.post('/login', handleLogin);
+router.post('/signin', handleLogin);
 
 export default router;

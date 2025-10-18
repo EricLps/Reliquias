@@ -1,27 +1,37 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "API Dev (nodemon)",
-      "type": "shell",
-      "command": "cmd",
-      "args": [
-        "/c",
-        "cd /d c:\\Estudos\\Faculdade\\reliquias\\server && npm run dev"
-      ],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "API Start (prod)",
-      "type": "shell",
-      "command": "cmd",
-      "args": [
-        "/c",
-        "cd /d c:\\Estudos\\Faculdade\\reliquias\\server && npm start"
-      ],
-      "group": "build",
-      "problemMatcher": []
-    }
-  ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "API Dev (nodemon)",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d c:\\Estudos\\Faculdade\\reliquias\\server && npm run dev"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "API Start (prod)",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d c:\\Estudos\\Faculdade\\reliquias\\server && npm start"
+			],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "API Dev (nodemon)",
+			"type": "shell",
+			"command": "cmd",
+			"args": [
+				"/c",
+				"cd /d c:\\Estudos\\Faculdade\\reliquias\\server && npm run dev"
+			],
+			"group": "build"
+		}
+	]
 }

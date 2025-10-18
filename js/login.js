@@ -1,3 +1,5 @@
+import { API_BASE } from './config.js';
+
 console.log('Script login.js carregado com sucesso');
 
 const form = document.getElementById('login-form');
@@ -13,14 +15,24 @@ if (form) {
     console.log('Email:', email);
 
     try {
-      const resp = await fetch('http://localhost:4000/api/auth/login', {
+      // Tenta endpoint menos suscetível a bloqueio por adblock
+      let resp = await fetch(`${API_BASE}/auth/signin`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({ email, senha: password })
       });
+      // Fallback para /login caso /signin não exista
+      if (resp.status === 404) {
+        resp = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ email, senha: password })
+        });
+      }
       if (!resp.ok) {
-        console.warn('Credenciais inválidas');
-        alert('Credenciais inválidas. Tente novamente.');
+        const msg = (await resp.json().catch(() => null))?.error || 'Credenciais inválidas.';
+        console.warn('Falha no login:', msg);
+        alert(msg);
         return;
       }
       const data = await resp.json();

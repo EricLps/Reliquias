@@ -28,7 +28,6 @@ export function renderNavbar() {
             <button class="menu-toggle" aria-label="Abrir menu">&#9776;</button>
             <ul class="nav-links">
                 <li><a href="#catalog">Catálogo</a></li>
-                <li><a href="#favoritos">Favoritos</a></li>
                 <li><a href="#contato">Contato</a></li>
                 <li><a href="#sobre">Sobre Nós</a></li>
                 ${adminItem}

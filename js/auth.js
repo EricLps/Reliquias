@@ -19,6 +19,8 @@ function clearSession() {
   localStorage.removeItem('isAuthenticated');
 }
 
+import { API_BASE } from './config.js';
+
 export function renderAuth(main) {
   const session = getSession();
   if (session) {
@@ -50,11 +52,18 @@ export function renderAuth(main) {
     // Fluxo admin: autentica no backend para obter token
     if (email === 'admin@reliquias.com') {
       try {
-        const resp = await fetch('http://localhost:4000/api/auth/login', {
+        let resp = await fetch(`${API_BASE}/auth/signin`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({ email, senha })
         });
+        if (resp.status === 404) {
+          resp = await fetch(`${API_BASE}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ email, senha })
+          });
+        }
         if (!resp.ok) throw new Error('Credenciais inválidas');
         const payload = await resp.json();
         if (!payload?.token) throw new Error('Resposta de login inválida');

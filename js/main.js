@@ -4,7 +4,6 @@ import { renderFooter } from './footer.js';
 
 import { renderCatalog } from './catalog.js';
 import { renderDetails } from './details.js';
-import { renderFavorites } from './favorites.js';
 import { renderContact } from './contact.js';
 import { renderAuth } from './auth.js';
 import { renderSobre } from './sobre.js';
@@ -17,9 +16,6 @@ function route() {
         case 'catalog':
         case 'carros':
             renderCatalog(main);
-            break;
-        case 'favoritos':
-            renderFavorites(main);
             break;
         case 'contato':
             renderContact(main);

@@ -21,7 +21,7 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 - Upload de imagens (GridFS + Sharp) e Imagem por URL
 - Segurança (JWT, Helmet, Rate Limit) e CORS
 - Configuração e execução (dev)
-- Deploy (Vercel + Render/Railway)
+- Deploy (Vercel + Render)
 - Configuração do Frontend para API (API_BASE dinâmica)
 - Exemplos rápidos (PowerShell/curl)
 - Troubleshooting (erros comuns)
@@ -67,7 +67,7 @@ O Relíquias é um catálogo de veículos com:
 ├── js/
 │   ├── config.js              # resolve API_BASE dinamicamente
 │   ├── main.js, navbar.js, footer.js, logo.js
-│   ├── catalog.js, card.js, sidepanel.js, favorites.js
+│   ├── catalog.js, card.js, sidepanel.js
 │   ├── contact.js, details.js, gallery.js, sobre.js
 │   ├── auth.js, login.js
 │   └── admin/
@@ -105,7 +105,6 @@ O Relíquias é um catálogo de veículos com:
 	- Descrição com 2 linhas (clamp)
 	- CTA “Mais informações” abre painel lateral
 - Painel lateral (detalhe) com imagem principal (URL ou GridFS) e simulação de financiamento
-- Favoritos (localStorage)
 - Contato e Agendamento (POST público para a API)
 
 ### Admin (JWT)
