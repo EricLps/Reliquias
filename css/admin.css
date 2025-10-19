@@ -90,6 +90,25 @@ body {
   margin-bottom: 2.5rem;
 }
 
+/* Botões utilitários gerais no Admin */
+.btn-secondary {
+  background:#eef2f7;
+  color:#0f2747;
+  border:1px solid #d1d5db;
+  border-radius:10px;
+  padding:.45rem .8rem;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+.btn-secondary:hover { background:#e7edf6; }
+
+/* Badges genéricas para status/indicadores no Admin */
+.badge { display:inline-flex; align-items:center; gap:6px; padding:.25rem .5rem; border-radius:999px; font-size:.82rem; font-weight:700; border:1px solid transparent; text-transform:capitalize; }
+.badge-pendente { background:#fff7ed; color:#9a3412; border-color:#fed7aa; }
+.badge-confirmado { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+.badge-cancelado { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
+
 
 .admin-table {
   width: 100%;

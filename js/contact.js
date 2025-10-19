@@ -28,13 +28,27 @@ export function renderContact(main) {
     feedback.textContent = '';
     try {
       const data = Object.fromEntries(new FormData(form));
-  const isAgendamento = ckAgendar.checked && data.dataHora;
-  const url = isAgendamento ? `${API_BASE}/agendamentos` : `${API_BASE}/leads`;
-      const payload = isAgendamento
-        ? { nome: data.nome, email: data.email, telefone: data.telefone, dataHora: data.dataHora, status: 'pendente' }
-        : { ...data, origem: 'contato' };
-      const resp = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!resp.ok) throw new Error('Falha ao enviar mensagem');
+      const isAgendamento = ckAgendar.checked && data.dataHora;
+
+      // 1) Sempre cria um Lead (com interesseTestDrive)
+      const leadPayload = { 
+        nome: data.nome,
+        email: data.email,
+        telefone: data.telefone,
+        mensagem: data.mensagem,
+        origem: 'contato',
+        interesseTestDrive: !!ckAgendar.checked,
+        dataHora: isAgendamento ? data.dataHora : undefined
+      };
+      const respLead = await fetch(`${API_BASE}/leads`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(leadPayload) });
+      if (!respLead.ok) throw new Error('Falha ao registrar contato');
+
+      //se marcar e informar data/hora, cria Agendamento público
+      if (isAgendamento) {
+        const agPayload = { nome: data.nome, email: data.email, telefone: data.telefone, dataHora: data.dataHora, status: 'pendente', titulo: `Test-drive de ${data.nome}`, tipo: 'test-drive' };
+        const respAg = await fetch(`${API_BASE}/agendamentos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(agPayload) });
+        if (!respAg.ok) throw new Error('Falha ao agendar test-drive');
+      }
       feedback.innerHTML = '<span class="feedback-success">Enviado com sucesso! Obrigado pelo contato.</span>';
       form.reset();
       agendarCampos.style.display = 'none';

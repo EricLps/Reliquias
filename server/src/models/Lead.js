@@ -5,6 +5,8 @@ const LeadSchema = new mongoose.Schema({
   email: { type: String, required: true },
   telefone: { type: String },
   mensagem: { type: String },
+  interesseTestDrive: { type: Boolean, default: false },
+  dataHora: { type: Date },
   origem: { type: String, enum: ['contato', 'veiculo', 'outro'], default: 'contato' }
 }, { timestamps: true });
 

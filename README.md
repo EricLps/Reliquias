@@ -29,6 +29,8 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 - Personalização rápida (UI)
 - Convenções de commit
 
+— Novidades recentes
+
 ---
 
 ## 🔎 Visão geral
@@ -39,6 +41,13 @@ O Relíquias é um catálogo de veículos com:
 - Formulários públicos de contato e agendamento (salvos no MongoDB).
 - Área administrativa com login (JWT) para CRUD de veículos, listagem de leads/agendamentos e atualização de status.
 - Suporte a imagens de veículos por upload (convertidas para WebP e salvas no GridFS) e também por URL externa.
+
+Novidades recentes
+- Página Sobre reestruturada (parallax adicional, métrica, cards, timeline e CTA final).
+- Catálogo: fallback na home — se nenhum veículo estiver marcado como “destaque”, a home exibe todos os veículos até que um filtro seja aplicado.
+- Contato → Lead → Agendamento: envio do formulário de contato sempre cria um Lead; se marcar test-drive com data/hora, cria também um Agendamento “pendente”.
+- Admin Leads: coluna “Interesse” + botão WhatsApp com mensagem padrão incluindo nome e motivo do contato.
+- Admin Agendamentos: layout dedicado, filtros (tipo/status/prioridade/período), ações com botões icônicos (confirmar/cancelar/editar/excluir), badges de status, exclusão (DELETE) e CSS isolado em `css/admin-agenda.css`.
 
 ---
 
@@ -134,12 +143,33 @@ O Relíquias é um catálogo de veículos com:
 
 ### Lead
 ```js
-{ nome: String!, email: String!, telefone?: String, mensagem?: String, origem: 'contato'|'veiculo'|'outro', timestamps }
+{
+	nome: String!,
+	email: String!,
+	telefone?: String,
+	mensagem?: String,
+	origem: 'contato'|'veiculo'|'outro',
+	interesseTestDrive?: Boolean,  
+	dataHora?: Date,                 // quando for indicado no contato
+	createdAt, updatedAt
+}
 ```
 
 ### Agendamento
 ```js
-{ nome: String!, email: String!, telefone?: String, veiculoId?: ObjectId, dataHora: Date!, status: 'pendente'|'confirmado'|'cancelado', timestamps }
+{
+	nome: String!,
+	email: String!,
+	telefone?: String,
+	titulo?: String,
+	tipo?: 'test-drive'|'vistoria'|'evento'|'outro',
+	prioridade?: 'azul'|'amarelo'|'vermelho',
+	veiculoId?: ObjectId,
+	dataHora: Date!,
+	status: 'pendente'|'confirmado'|'cancelado',
+	origem: 'publico'|'admin',
+	createdAt, updatedAt
+}
 ```
 
 ---
@@ -168,11 +198,45 @@ Agendamentos
 - POST `/agendamentos` → cria (público)
 - GET `/agendamentos` (admin) → lista
 - PATCH `/agendamentos/:id/status` (admin) → `{ status }`
+- PATCH `/agendamentos/:id` (admin) → editar dados do agendamento
+- DELETE `/agendamentos/:id` (admin) → remover agendamento
 
 Headers para rotas admin
 - `Authorization: Bearer <token>`
 
 ---
+
+## 🧭 Fluxos funcionais
+
+### Contato → Lead → (opcional) Agendamento
+Frontend (`js/contact.js`)
+- O envio do formulário sempre faz POST em `/leads` com: nome, email, telefone, mensagem, origem='contato', `interesseTestDrive` (true/false) e `dataHora` (se fornecida).
+- Se o usuário marcar “Quero agendar um test-drive” e fornecer data/hora, além do Lead é criado um Agendamento público em `/agendamentos` com `status='pendente'` e `tipo='test-drive'`.
+
+Admin → Leads (`js/admin/leads.js`, `js/admin/adminViews.js`)
+- A tabela de leads exibe colunas Nome, Email, Telefone, Mensagem, Interesse, Ações.
+- Em “Interesse”, aparece uma badge “Contato” ou “Test-drive • data/hora”.
+- Em “Ações”, o botão “WhatsApp” abre um link pré-preenchido com:
+	- primeiro nome do cliente (se disponível),
+	- motivo do contato (test-drive em data/hora, ou a mensagem enviada, truncada a 140 chars),
+	- usando `buildWhatsAppLink`.
+
+Admin → Agendamentos (`js/admin/agendamentos.js`, `css/admin-agenda.css`)
+- Filtros: tipo, status, prioridade e período (7/30 dias).
+- Formulário compacto para adicionar agendamentos manuais (origem `admin`).
+- Tabela com status em badges e ações por linha:
+	- Confirmar/Cancelar (PATCH status),
+	- Editar (PATCH dados),
+	- Excluir (DELETE),
+	- Ícones com tooltips e acessibilidade.
+- Layout responsivo e estilos isolados em `css/admin-agenda.css` para não interferir em outras telas.
+
+### Catálogo — fallback de destaque
+- Na home, se não houver veículos marcados com `destaque`, o catálogo renderiza todos os veículos inicialmente para evitar tela vazia.
+
+### Página “Sobre”
+- Seções parallax (hero, citação e CTA), métrica, cards (Missão/Valores/Diferenciais/Compromisso) e timeline.
+- Estilos em `css/style.css` com imagens substituíveis via `background-image` (URLs de exemplo do Unsplash). Basta trocar pelas suas imagens.
 
 ## 🖼️ Imagens — upload e URL
 
@@ -191,6 +255,13 @@ Headers para rotas admin
 	- Localhost/127.0.0.1 em qualquer porta (dev)
 	- Origens sem header (curl/file) e `null`
 	- Domínios `*.vercel.app` e domínio `https://reliquias.vercel.app`
+
+Env vars (produção, sem versionar `.env`)
+- Render/Railway (API): defina `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `CORS_ORIGIN` nas Settings do serviço.
+- Vercel (frontend): não precisa de segredos; se quiser forçar API, use `<meta name="api-base">` ou `window.__API_BASE__`.
+- Git: 
+  - `.gitignore` ignora `.env` (raiz e subpastas) e há `server/.env.example` como referência.
+  - Se um `.env` foi commitado por engano, remova do tracking e considere limpar o histórico (BFG/filter-repo) e ROTACIONAR segredos.
 
 ---
 
@@ -287,6 +358,7 @@ Formato: apenas dígitos com DDI (ex.: 55 + DDD + número). Ex.: 5511999999999. 
 Implementação:
 - `js/config.js`: `WHATSAPP_NUMBER` e `buildWhatsAppLink(message, number?)`
 - `js/sidepanel.js`: usa `buildWhatsAppLink` no botão “Agendar Test-Drive” e no link “Falar no WhatsApp”.
+- Admin Leads (`js/admin/leads.js`): usa `buildWhatsAppLink` para contatar o cliente que enviou o formulário de contato, com mensagem padrão contendo nome e motivo.
 
 ---
 

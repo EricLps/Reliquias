@@ -1,6 +1,3 @@
-// As views abaixo passam a apenas RETORNAR o HTML. A lógica de inserção no DOM
-// e inicializações adicionais (ex.: renderLeads/renderAgendamentos) ficam em admin.js.
-
 export function renderAdminVeiculos() {
   return `
     <section class="admin-section">
@@ -67,6 +64,7 @@ export function renderAdminLeads() {
             <th>Email</th>
             <th>Telefone</th>
             <th>Mensagem</th>
+            <th>Interesse</th>
             <th>Ações</th>
           </tr>
         </thead>

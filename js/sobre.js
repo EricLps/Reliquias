@@ -1,26 +1,74 @@
 export function renderSobre(main) {
   main.innerHTML = `
+    <!-- Hero Parallax -->
     <section class="parallax-sobre">
       <div class="parallax-content">
         <h2>Sobre a JELLI Group</h2>
-        <p>Desde 2010, o JELLI Group conecta pessoas e histórias por meio da paixão por carros antigos.
-Somos mais que uma concessionária: somos guardiões de memórias sobre rodas. A cada cliente, a cada veículo, reafirmamos nosso compromisso com a excelência, com o respeito à originalidade e com a construção de um legado que celebra o melhor do automobilismo clássico.<br>
-        Nossa missão vai além da preservação de veículos: queremos manter viva a cultura automotiva, honrando suas histórias e inspirando novas gerações.
-Valorizamos a autenticidade, o legado e a conexão emocional que os carros antigos proporcionam. Acreditamos que cada automóvel é uma cápsula do tempo, carregando memórias, paixões e experiências únicas. É essa herança que nos move todos os dias.</p>
+        <p>Desde 2010, conectamos pessoas e histórias por meio da paixão por carros antigos. Somos mais que uma concessionária: preservamos memórias sobre rodas e celebramos o melhor do automobilismo clássico.</p>
       </div>
     </section>
-          <p>Em um ambiente amplo, elegante e cuidadosamente planejado, o JELLI Group proporciona uma verdadeira viagem no tempo.
-Nossa loja não é apenas um showroom — é um espaço onde o passado ganha vida e onde cada veículo exibe com orgulho sua história. Caminhar por aqui é mergulhar em uma atmosfera nostálgica, cercada por design, engenharia e emoção. É um convite à contemplação, à memória e ao fascínio que só os clássicos são capazes de despertar.</p>
-          <p>Mais do que comercializar veículos, oferecemos uma experiência completa para quem valoriza o passado sobre rodas.
-Nosso espaço foi pensado para encantar desde colecionadores experientes até entusiastas iniciantes. Com um atendimento próximo e personalizado, oferecemos orientação especializada, suporte na formação de acervos particulares e realizamos eventos exclusivos que celebram a cultura automotiva. Cada visita é uma oportunidade de troca, aprendizado e, principalmente, conexão com um universo que transcende o tempo.</p>
-        </div>
-      </section>
-      <section class="section-sobre">
-        <h2>Nossa História</h2>
-        <p>O JELLI Group nasceu do amor genuíno por carros antigos, tanto nacionais quanto importados.
-Desde 2010, construímos uma trajetória sólida baseada na curadoria rigorosa de modelos que fizeram história nas décadas de 70, 80, 90 e 2000. Nossa equipe é formada por profissionais especializados que compartilham a mesma paixão por veículos clássicos, sempre atentos à procedência, à originalidade e à experiência de cada cliente. Aqui, cada carro é escolhido com critério, valorizando não apenas o estado de conservação, mas também a história que carrega.</p>
-        <p>Venha nos visitar e descubra por que somos referência nacional quando o assunto são carros clássicos.
-Mais do que uma loja, somos um ponto de encontro para os apaixonados por veículos que marcaram gerações. Em cada detalhe, do atendimento ao acervo, você vai perceber o cuidado e o respeito que temos pela história do automobilismo.</p>
-      </section>
+
+    <!-- Intro -->
+    <section class="section-sobre">
+      <h2>Nossa essência</h2>
+      <p>Em um ambiente amplo e cuidadosamente planejado, proporcionamos uma verdadeira viagem no tempo. Nossa loja é um espaço onde o passado ganha vida e cada veículo exibe com orgulho sua história.</p>
+      <p>Mais do que comercializar veículos, oferecemos uma experiência completa: orientação especializada, apoio na formação de acervos e eventos que celebram a cultura automotiva.</p>
+    </section>
+
+    <!-- Métricas -->
+    <section class="sobre-metricas">
+      <div class="metric"><span class="num">15+</span><span class="lbl">anos de história</span></div>
+      <div class="metric"><span class="num">300+</span><span class="lbl">clássicos entregues</span></div>
+      <div class="metric"><span class="num">1.2k+</span><span class="lbl">entusiastas atendidos</span></div>
+      <div class="metric"><span class="num">80+</span><span class="lbl">eventos realizados</span></div>
+    </section>
+
+    <!-- Valores e Diferenciais -->
+    <section class="sobre-cards">
+      <article class="card">
+        <h3>Missão</h3>
+        <p>Manter viva a cultura automotiva, honrando histórias e criando novas conexões entre pessoas e máquinas.</p>
+      </article>
+      <article class="card">
+        <h3>Valores</h3>
+        <p>Autenticidade, respeito à originalidade, transparência e atendimento humano em cada etapa.</p>
+      </article>
+      <article class="card">
+        <h3>Diferenciais</h3>
+        <p>Curadoria rigorosa, procedência garantida, consultoria para colecionadores e experiência imersiva.</p>
+      </article>
+      <article class="card">
+        <h3>Compromisso</h3>
+        <p>Cada carro é uma cápsula do tempo. Nosso compromisso é preservá-la com excelência e responsabilidade.</p>
+      </article>
+    </section>
+
+    <!-- Parallax citação -->
+    <section class="parallax-sobre-2">
+      <div class="parallax-content">
+        <h2>“Clássicos não envelhecem — tornam-se lendas.”</h2>
+        <p>Nosso acervo é selecionado para despertar memórias e inspirar novas jornadas.</p>
+      </div>
+    </section>
+
+    <!-- Timeline básica -->
+    <section class="sobre-timeline">
+      <h2>Nossa trajetória</h2>
+      <ul class="timeline">
+        <li><span class="ano">2010</span> Fundação do JELLI Group e primeiros clássicos no acervo</li>
+        <li><span class="ano">2014</span> Primeiros eventos temáticos para a comunidade</li>
+        <li><span class="ano">2018</span> Expansão do showroom e consultoria para colecionadores</li>
+        <li><span class="ano">2023</span> Acervo internacional e destaque em publicações do setor</li>
+      </ul>
+    </section>
+
+    <!-- Parallax CTA -->
+    <section class="parallax-sobre-cta">
+      <div class="parallax-content">
+        <h2>Venha viver essa experiência</h2>
+        <p>Agende uma visita ou fale com nossa equipe para conhecer o acervo.</p>
+        <a href="#contato" class="btn-cta">Falar com a equipe</a>
+      </div>
+    </section>
   `;
 }
