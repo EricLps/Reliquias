@@ -17,6 +17,12 @@ export function verifyToken(req, res, next) {
 
 export function requireAdmin(req, res, next) {
   if (!req.user) return res.status(401).json({ error: 'Não autenticado' });
-  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado' });
+  if (req.user.role !== 'admin' && req.user.role !== 'adminMaster') return res.status(403).json({ error: 'Acesso negado' });
+  next();
+}
+
+export function requireAdminMaster(req, res, next) {
+  if (!req.user) return res.status(401).json({ error: 'Não autenticado' });
+  if (req.user.role !== 'adminMaster') return res.status(403).json({ error: 'Acesso negado' });
   next();
 }

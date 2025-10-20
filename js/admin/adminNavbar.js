@@ -10,6 +10,7 @@ export function renderAdminNavbar() {
           <li><a href="#admin-veiculos" class="active">Veículos</a></li>
           <li><a href="#admin-leads">Leads/Contatos</a></li>
           <li><a href="#admin-agendamentos">Agendamentos</a></li>
+          <li><a href="#admin-usuarios">Usuários</a></li>
           <li><a href="#admin-relatorios">Relatórios</a></li>
           <li><a href="index.html">Voltar ao site</a></li>
         </ul>

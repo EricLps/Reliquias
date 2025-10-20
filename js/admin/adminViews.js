@@ -107,3 +107,22 @@ export function renderAdminRelatorios() {
     </section>
   `;
 }
+
+export function renderAdminUsuarios() {
+  return `
+    <section class="admin-section">
+      <h2>Usuários</h2>
+      <p style="color:#475569; font-size:.9rem; margin:.25rem 0 1rem 0">Apenas adminMaster pode alterar papéis. Admin pode visualizar a lista.</p>
+      <div id="usuarios-lista">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Nome</th><th>Email</th><th>Papel</th><th>Ações</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}

@@ -11,6 +11,9 @@ import authRoutes from './routes/auth.routes.js';
 import veiculosRoutes from './routes/veiculos.routes.js';
 import leadsRoutes from './routes/leads.routes.js';
 import agendamentosRoutes from './routes/agendamentos.routes.js';
+import usersRoutes from './routes/users.routes.js';
+import User from './models/User.js';
+import bcrypt from 'bcryptjs';
 
 const app = express();
 
@@ -64,10 +67,34 @@ app.use('/api/auth', authRoutes);
 app.use('/api/veiculos', veiculosRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/agendamentos', agendamentosRoutes);
+app.use('/api/users', usersRoutes);
 
 // Start
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log(`API ouvindo em http://localhost:${port}`));
+app.listen(port, async () => {
+  console.log(`API ouvindo em http://localhost:${port}`);
+  // Seed adminMaster
+  try {
+    const email = process.env.ADMIN_MASTER_EMAIL;
+    const senha = process.env.ADMIN_MASTER_PASS;
+    if (email && senha) {
+      let master = await User.findOne({ email: email.toLowerCase() });
+      if (!master) {
+        const senhaHash = bcrypt.hashSync(senha, 10);
+        master = await User.create({ nome: 'Admin Master', email: email.toLowerCase(), senhaHash, role: 'adminMaster' });
+        console.log('adminMaster criado:', email);
+      } else if (master.role !== 'adminMaster') {
+        master.role = 'adminMaster';
+        await master.save();
+        console.log('adminMaster promovido:', email);
+      }
+    } else {
+      console.log('ADMIN_MASTER_EMAIL/ADMIN_MASTER_PASS não configurados. Pulei seed do adminMaster.');
+    }
+  } catch (err) {
+    console.error('Falha ao garantir adminMaster:', err);
+  }
+});
 
 // Error handler (inclui erros de upload do Multer)
 app.use((err, _req, res, _next) => {

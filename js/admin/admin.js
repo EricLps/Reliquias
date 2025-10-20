@@ -1,6 +1,7 @@
-import { renderAdminVeiculos, renderAdminLeads, renderAdminAgendamentos, renderAdminRelatorios } from './adminViews.js';
+import { renderAdminVeiculos, renderAdminLeads, renderAdminAgendamentos, renderAdminRelatorios, renderAdminUsuarios } from './adminViews.js';
 import { renderLeads } from './leads.js';
 import { renderAgendamentos } from './agendamentos.js';
+import { renderUsuarios } from './usuarios.js';
 import { API_BASE } from '../config.js';
 
 function ensureAuthenticated() {
@@ -9,8 +10,9 @@ function ensureAuthenticated() {
     const isAuthFlag = localStorage.getItem('isAuthenticated');
     const token = localStorage.getItem('token');
     const session = sessionRaw ? JSON.parse(sessionRaw) : null;
-    // Exige sessão admin, flag autenticado e token JWT presente
-    if (!session || session.role !== 'admin' || isAuthFlag !== 'true' || !token) {
+    // Exige sessão com role admin|adminMaster, flag autenticado e token JWT presente
+    const isAdminRole = session && (session.role === 'admin' || session.role === 'adminMaster');
+    if (!isAdminRole || isAuthFlag !== 'true' || !token) {
       window.location.href = 'login.html';
       return false;
     }
@@ -29,10 +31,15 @@ function authHeaders(extra = {}) {
 }
 
 function handleAuthFailure(resp) {
-  if (resp && (resp.status === 401 || resp.status === 403)) {
+  if (!resp) return false;
+  if (resp.status === 401) {
     localStorage.removeItem('token');
     localStorage.removeItem('isAuthenticated');
     window.location.href = 'login.html';
+    return true;
+  }
+  if (resp.status === 403) {
+    alert('Sem permissão para esta operação.');
     return true;
   }
   return false;
@@ -71,6 +78,10 @@ function renderAdminPage() {
     });
   } else if (hash === '#admin-relatorios') {
     renderIntoMain(renderAdminRelatorios());
+  } else if (hash === '#admin-usuarios') {
+    renderIntoMain(renderAdminUsuarios(), () => {
+      renderUsuarios();
+    });
   }
   else main.innerHTML = '<p>Página não encontrada.</p>';
 }

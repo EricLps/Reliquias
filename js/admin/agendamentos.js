@@ -325,7 +325,8 @@ export async function renderAgendamentos() {
   const btnReload = container.querySelector('#ag-recarregar');
     try {
         const resp = await fetch(`${API_BASE}/agendamentos`, { headers: authHeaders() });
-        if (resp.status === 401 || resp.status === 403) { window.location.href = 'login.html'; return; }
+  if (resp.status === 401) { window.location.href = 'login.html'; return; }
+  if (resp.status === 403) { alert('Sem permissão para carregar agendamentos.'); return; }
         __ag_cache = await resp.json();
         bindFilters(container);
         renderRows(applyFilters(__ag_cache, container), tbody);

@@ -6,10 +6,15 @@ function authHeaders(extra={}) {
 }
 
 function handleAuthFailure(resp) {
-    if (resp && (resp.status === 401 || resp.status === 403)) {
+    if (!resp) return false;
+    if (resp.status === 401) {
         localStorage.removeItem('token');
         localStorage.removeItem('isAuthenticated');
         window.location.href = 'login.html';
+        return true;
+    }
+    if (resp.status === 403) {
+        alert('Sem permissão para esta ação.');
         return true;
     }
     return false;
