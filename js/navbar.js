@@ -10,11 +10,11 @@ export function renderNavbar() {
         session = null;
     }
     const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    const isAdmin = !!session && session.role === 'admin' && isAuthenticated;
+    const isAdmin = !!session && (session.role === 'admin' || session.role === 'adminMaster') && isAuthenticated;
 
     const accountItem = session
-        ? '<li><a href="#login" id="account-link">Minha Conta</a></li>'
-        : '<li><a href="#login" id="login-link">Login/Cadastro</a></li>';
+        ? ''
+        : '<li><a href="login.html" id="login-link">Login</a></li>';
 
     const adminItem = isAdmin
         ? '<li><a href="admin.html#admin-veiculos" id="admin-link">Admin</a></li>'

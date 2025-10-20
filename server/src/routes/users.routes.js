@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import User from '../models/User.js';
 import { verifyToken, requireAdmin, requireAdminMaster } from '../middleware/auth.js';
+import bcrypt from 'bcryptjs';
 
 const router = Router();
 
@@ -30,3 +31,34 @@ router.patch('/:id/role', verifyToken, requireAdminMaster, async (req, res) => {
 });
 
 export default router;
+
+// Bootstrapping endpoint (opcional): permitir que um admin crie um adminMaster uma única vez, se não existir.
+// Mantém simples para facilitar o onboard. Pode ser removido depois.
+router.post('/admin-master', verifyToken, requireAdmin, async (req, res) => {
+  try {
+    const exists = await User.findOne({ role: 'adminMaster' }).lean();
+    if (exists) return res.status(400).json({ error: 'Já existe um adminMaster' });
+    const { nome, email, senha } = req.body || {};
+    if (!nome || !email || !senha) return res.status(400).json({ error: 'nome, email e senha são obrigatórios' });
+    const senhaHash = bcrypt.hashSync(senha, 10);
+    const user = await User.create({ nome, email: email.toLowerCase(), senhaHash, role: 'adminMaster' });
+    res.status(201).json({ _id: user._id, nome: user.nome, email: user.email, role: user.role });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao criar adminMaster' });
+  }
+});
+
+// Criar usuário comum (apenas adminMaster)
+router.post('/', verifyToken, requireAdminMaster, async (req, res) => {
+  try {
+    const { nome, email, senha } = req.body || {};
+    if (!nome || !email || !senha) return res.status(400).json({ error: 'nome, email e senha são obrigatórios' });
+    const exists = await User.findOne({ email: email.toLowerCase() }).lean();
+    if (exists) return res.status(409).json({ error: 'E-mail já cadastrado' });
+    const senhaHash = bcrypt.hashSync(senha, 10);
+    const user = await User.create({ nome, email: email.toLowerCase(), senhaHash, role: 'user' });
+    res.status(201).json({ _id: user._id, nome: user.nome, email: user.email, role: user.role });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao criar usuário' });
+  }
+});

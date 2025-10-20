@@ -5,7 +5,6 @@ import { renderFooter } from './footer.js';
 import { renderCatalog } from './catalog.js';
 import { renderDetails } from './details.js';
 import { renderContact } from './contact.js';
-import { renderAuth } from './auth.js';
 import { renderSobre } from './sobre.js';
 
 
@@ -19,10 +18,6 @@ function route() {
             break;
         case 'contato':
             renderContact(main);
-            break;
-        case 'login':
-        case 'cadastro':
-            renderAuth(main);
             break;
         case 'detalhes':
             renderDetails(main);

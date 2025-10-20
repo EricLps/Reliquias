@@ -43,8 +43,15 @@ if (form) {
       // Guardar token e sessão
       localStorage.setItem('token', data.token);
       localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('session', JSON.stringify(data.user || { email, role: 'admin', nome: 'Administrador' }));
-      window.location.href = 'admin.html#admin-veiculos';
+      const user = data.user || { email, role: 'admin', nome: 'Administrador' };
+      localStorage.setItem('session', JSON.stringify(user));
+      // Redireciona conforme papel
+      const role = (user && user.role) || 'admin';
+      if (role === 'admin' || role === 'adminMaster') {
+        window.location.href = 'admin.html#admin-veiculos';
+      } else {
+        window.location.href = 'index.html#catalog';
+      }
     } catch (e) {
       console.error('Falha no login:', e);
       alert('Erro ao conectar ao servidor.');
