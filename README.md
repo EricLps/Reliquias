@@ -47,6 +47,7 @@ Novidades recentes
 - Catálogo: fallback na home — se nenhum veículo estiver marcado como “destaque”, a home exibe todos os veículos até que um filtro seja aplicado.
 - Contato → Lead → Agendamento: envio do formulário de contato sempre cria um Lead; se marcar test-drive com data/hora, cria também um Agendamento “pendente”.
 - Admin Leads: coluna “Interesse” + botão WhatsApp com mensagem padrão incluindo nome e motivo do contato.
+- Admin Leads: filtro por status (Todos/Abertos/Concluídos), coluna “Status” separada, ações de Concluir/Excluir, criar Agendamento de Test-Drive a partir do lead e botão “Ver Agendamento” quando houver vínculo; toasts de sucesso/erro e toast clicável para abrir a Agenda.
 - Admin Agendamentos: layout dedicado, filtros (tipo/status/prioridade/período), ações com botões icônicos (confirmar/cancelar/editar/excluir), badges de status, exclusão (DELETE) e CSS isolado em `css/admin-agenda.css`.
 
 ---
@@ -151,6 +152,7 @@ Novidades recentes
 	origem: 'contato'|'veiculo'|'outro',
 	interesseTestDrive?: Boolean,  
 	dataHora?: Date,                 // quando for indicado no contato
+	agendamentoId?: ObjectId,        // vínculo quando o agendamento é criado a partir do Lead
 	createdAt, updatedAt
 }
 ```
@@ -180,7 +182,7 @@ Base: `http://localhost:4000/api` (dev) ou `https://SUA-API/api` (prod)
 
 Autenticação
 - POST `/auth/login` → `{ token, user }` (admin simulado)
-	- Email: `admin@reliquias.com` | Senha: `admin123` (em produção, altere!)
+	- Defina as credenciais de admin no seu ambiente e não publique usuários/senhas em documentação.
 
 Veículos
 - GET `/veiculos` → lista
@@ -193,6 +195,7 @@ Veículos
 Leads
 - POST `/leads` → cria (público)
 - GET `/leads` (admin) → lista
+- PATCH `/leads/:id` (admin) → atualiza campos do lead (ex.: agendamentoId, status, mensagem)
 
 Agendamentos
 - POST `/agendamentos` → cria (público)
@@ -215,8 +218,13 @@ Frontend (`js/contact.js`)
 
 Admin → Leads (`js/admin/leads.js`, `js/admin/adminViews.js`)
 - A tabela de leads exibe colunas Nome, Email, Telefone, Mensagem, Interesse, Ações.
-- Em “Interesse”, aparece uma badge “Contato” ou “Test-drive • data/hora”.
-- Em “Ações”, o botão “WhatsApp” abre um link pré-preenchido com:
+- Em “Interesse”, aparece uma badge “Contato” ou “Test-drive • data/hora”. É possível filtrar por status (Todos/Abertos/Concluídos).
+- Em “Ações”, tem:
+	- “WhatsApp” com link pré-preenchido,
+	- “✓” Concluir contato (status=concluido),
+	- “🗑️” Excluir contato,
+	- “🗓️” Agendar Test-Drive (quando houver interesse); ao criar, o `agendamentoId` é salvo no Lead,
+	- “Ver Agendamento” aparece quando o `agendamentoId` está presente.
 	- primeiro nome do cliente (se disponível),
 	- motivo do contato (test-drive em data/hora, ou a mensagem enviada, truncada a 140 chars),
 	- usando `buildWhatsAppLink`.
@@ -360,6 +368,11 @@ Implementação:
 - `js/sidepanel.js`: usa `buildWhatsAppLink` no botão “Agendar Test-Drive” e no link “Falar no WhatsApp”.
 - Admin Leads (`js/admin/leads.js`): usa `buildWhatsAppLink` para contatar o cliente que enviou o formulário de contato, com mensagem padrão contendo nome e motivo.
 
+### Toasts no Admin e Navegação com Foco
+- Utilitário: `js/admin/ui.js` → `showToast(message, type='info', options?)`.
+- Tipos de toast: `success`, `error`, `info`.
+- Navegação pelo toast: passe `options.link` (ex.: `#admin-agendamentos?focus=<id>`). A Agenda, ao abrir com esse hash, faz scroll até a linha com aquele id e destaca por ~2 segundos.
+
 ---
 
 ## 🧪 Exemplos rápidos
@@ -376,7 +389,20 @@ curl http://localhost:4000/api/veiculos
 
 Login admin (JWT)
 ```powershell
-curl -X POST http://localhost:4000/api/auth/login -H "Content-Type: application/json" -d '{"email":"admin@reliquias.com","senha":"admin123"}'
+curl -X POST http://localhost:4000/api/auth/login -H "Content-Type: application/json" -d '{"email":"<ADMIN_EMAIL>","senha":"<ADMIN_SENHA>"}'
+```
+
+Atualizar Lead (vincular agendamento criado)
+```powershell
+curl -X PATCH http://localhost:4000/api/leads/<LEAD_ID> ^
+	-H "Authorization: Bearer <TOKEN>" ^
+	-H "Content-Type: application/json" ^
+	-d '{"agendamentoId":"<AG_ID>"}'
+```
+
+Abrir Agenda com foco (via hash na URL do Admin)
+```
+admin.html#admin-agendamentos?focus=<AG_ID>
 ```
 
 Criar veículo (URL de imagem)

@@ -17,9 +17,9 @@
   if (el) el.innerHTML = logoHTML;
 })();
 
-export function renderLogo() {
-    return `
-        <a href="#catalog" aria-label="JELLI Group Home">
+export function renderLogo(href = '#catalog') {
+  return `
+    <a href="${href}" aria-label="JELLI Group Home">
             <svg class="logo" width="120" height="40" viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo JELLI Group">
                 <circle cx="40" cy="35" r="28" stroke="#f5e1b8" stroke-width="3" fill="none" />
                 <circle cx="40" cy="35" r="10" stroke="#f5e1b8" stroke-width="3" fill="none" />

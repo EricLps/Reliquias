@@ -3,7 +3,7 @@ import { renderLogo } from '../logo.js';
 export function renderAdminNavbar() {
   return `
     <header id="navbar">
-      <div class="logo-container">${renderLogo()}</div>
+  <div class="logo-container">${renderLogo('index.html#catalog')}</div>
       <nav>
         <button class="menu-toggle" aria-label="Abrir menu">&#9776;</button>
         <ul class="nav-links">

@@ -329,6 +329,22 @@ export async function renderAgendamentos() {
         __ag_cache = await resp.json();
         bindFilters(container);
         renderRows(applyFilters(__ag_cache, container), tbody);
+        // Se houver um parâmetro ?focus=<id> no hash, rolar e destacar
+        try {
+          const hash = window.location.hash || '';
+          const m = hash.match(/\?focus=([A-Za-z0-9]+)/);
+          const focusId = m ? m[1] : null;
+          if (focusId) {
+            const row = tbody.querySelector(`[data-id='${focusId}']`) || tbody.querySelector(`.btn-acao[data-id='${focusId}']`)?.closest('tr') || tbody.querySelector(`.btn-edit[data-id='${focusId}']`)?.closest('tr') || tbody.querySelector(`.btn-delete[data-id='${focusId}']`)?.closest('tr');
+            if (row) {
+              row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const oldBg = row.style.backgroundColor;
+              row.style.transition = 'background-color .4s ease';
+              row.style.backgroundColor = '#fffbeb'; // amarelo suave
+              setTimeout(() => { row.style.backgroundColor = oldBg || ''; }, 2000);
+            }
+          }
+        } catch {}
         // Define alguns padrões úteis ao carregar (para facilitar o preenchimento)
         if (form) {
           if (form.tipo) form.tipo.value = form.tipo.value || 'test-drive';

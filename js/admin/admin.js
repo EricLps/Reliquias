@@ -7,8 +7,10 @@ function ensureAuthenticated() {
   try {
     const sessionRaw = localStorage.getItem('session');
     const isAuthFlag = localStorage.getItem('isAuthenticated');
+    const token = localStorage.getItem('token');
     const session = sessionRaw ? JSON.parse(sessionRaw) : null;
-    if (!session || session.role !== 'admin' || isAuthFlag !== 'true') {
+    // Exige sessão admin, flag autenticado e token JWT presente
+    if (!session || session.role !== 'admin' || isAuthFlag !== 'true' || !token) {
       window.location.href = 'login.html';
       return false;
     }
@@ -45,7 +47,7 @@ function setActiveNav(hash) {
 function renderIntoMain(html, afterRender) {
   const main = document.getElementById('admin-content');
   if (!main) return;
-  main.innerHTML = html;
+  main.innerHTML = html + '<div id="toast-container" aria-live="polite" aria-atomic="true"></div>';
   if (typeof afterRender === 'function') afterRender();
 }
 

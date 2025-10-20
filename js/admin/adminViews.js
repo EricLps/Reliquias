@@ -57,6 +57,17 @@ export function renderAdminLeads() {
   const html = `
     <section class="admin-section">
       <h2>Leads / Contatos Recebidos</h2>
+      <div id="leads-filtros" style="display:flex;gap:.75rem;align-items:center;margin:.5rem 0 1rem 0;">
+        <label style="font-weight:700;color:#0f2747;font-size:.92rem;">
+          Status
+          <select id="leads-filter-status" style="margin-left:.5rem">
+            <option value="all">Todos</option>
+            <option value="aberto">Abertos</option>
+            <option value="concluido">Concluídos</option>
+          </select>
+        </label>
+        <span id="leads-contagem" style="font-size:.9rem;color:#475569"></span>
+      </div>
       <table id="leads-table">
         <thead>
           <tr>
@@ -65,6 +76,7 @@ export function renderAdminLeads() {
             <th>Telefone</th>
             <th>Mensagem</th>
             <th>Interesse</th>
+            <th>Status</th>
             <th>Ações</th>
           </tr>
         </thead>
