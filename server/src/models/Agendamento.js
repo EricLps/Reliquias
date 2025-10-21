@@ -12,6 +12,8 @@ const AgendamentoSchema = new mongoose.Schema({
   notas: { type: String },
   // Relacionamento opcional com veículo
   veiculoId: { type: mongoose.Schema.Types.ObjectId, ref: 'Veiculo' },
+  // Relacionamento opcional com lead (quando originado de um contato)
+  leadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Lead' },
   dataHora: { type: Date, required: true },
   status: { type: String, enum: ['pendente', 'confirmado', 'cancelado'], default: 'pendente' },
   origem: { type: String, enum: ['publico', 'admin'], default: 'publico' }

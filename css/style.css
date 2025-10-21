@@ -271,6 +271,14 @@
   margin-bottom: 1.2rem;
   box-shadow: 0 2px 12px #001f3f22;
 }
+.sp-gallery { position: relative; margin-bottom: 1rem; }
+.sp-main { position: relative; }
+.sp-main img { width: 100%; border-radius: 12px; box-shadow: 0 2px 12px #001f3f22; transition: opacity .18s ease; }
+.sp-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15,39,71,0.28); color: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(2px); box-shadow: 0 4px 12px rgba(0,0,0,.18); transition: background .2s, transform .15s, opacity .2s; opacity: .9; }
+.sp-arrow:hover, .sp-arrow:focus { background: rgba(15,39,71,0.45); outline: none; transform: translateY(-50%) scale(1.06); }
+.sp-left { left: 10px; }
+.sp-right { right: 10px; }
+.sp-arrow:active { transform: translateY(-50%) scale(0.96); }
 .side-panel-content .car-meta {
   font-size: 1.05rem;
   color: #555;

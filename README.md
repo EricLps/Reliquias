@@ -2,7 +2,7 @@
 
 # 🚗 Relíquias — Catálogo de carros clássicos
 
-Frontend estático + API Node/Express + MongoDB Atlas (com imagens via GridFS e/ou URL). Autenticação JWT para área admin, CORS robusto, compressão de imagens com Sharp e layout responsivo com cards otimizados.
+Frontend estático + API Node/Express + MongoDB Atlas (imagens via GridFS e/ou URL). Autenticação JWT na área Admin, CORS robusto, processamento de imagens com Sharp e layout responsivo.
 
 Deploy de referência (frontend): https://reliquias.vercel.app/
 
@@ -15,79 +15,112 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 - Visão geral
 - Stack e arquitetura
 - Estrutura de pastas
-- Recursos implementados (Frontend e Admin)
+- Recursos implementados (Público e Admin)
+- Papéis e contas (user, admin, adminMaster)
+- Fluxo Contato → Lead → Agendamento
 - Modelos de dados (Mongoose)
-- Referência de API (endpoints)
-- Upload de imagens (GridFS + Sharp) e Imagem por URL
+- Referência de API (Auth, Users, Veículos, Leads, Agendamentos)
+- Imagens (GridFS + Sharp) e Imagem por URL
 - Segurança (JWT, Helmet, Rate Limit) e CORS
 - Configuração e execução (dev)
-- Deploy (Vercel + Render)
-- Configuração do Frontend para API (API_BASE dinâmica)
-- Configuração do WhatsApp (WHATSAPP_NUMBER)
+- Deploy (Vercel + Render/Railway)
+- Configuração do Frontend (API_BASE) e WhatsApp
 - Exemplos rápidos (PowerShell/curl)
 - Troubleshooting (erros comuns)
 - Personalização rápida (UI)
 - Convenções de commit
-
-— Novidades recentes
 
 ---
 
 ## 🔎 Visão geral
 
 O Relíquias é um catálogo de veículos com:
-- Catálogo público com filtros por marca e cards padronizados (lazy-loading de imagens, clamp de descrição, grid responsiva).
-- Página de detalhes em painel lateral com simulação simples de financiamento.
-- Formulários públicos de contato e agendamento (salvos no MongoDB).
-- Área administrativa com login (JWT) para CRUD de veículos, listagem de leads/agendamentos e atualização de status.
-- Suporte a imagens de veículos por upload (convertidas para WebP e salvas no GridFS) e também por URL externa.
+- Catálogo público com filtros por marca e cards otimizados.
+- Detalhe em painel lateral com simulação simples de financiamento e carrossel de fotos (setas translúcidas e modernas).
+- Formulários públicos de contato e agendamento.
+- Área administrativa com login (JWT) para CRUD de veículos, leads e agendamentos; filtros, toasts e navegação com foco.
+- Suporte a imagens via upload (GridFS + Sharp) e via URL externa.
 
-Novidades recentes
-- Página Sobre reestruturada (parallax adicional, métrica, cards, timeline e CTA final).
-- Catálogo: fallback na home — se nenhum veículo estiver marcado como “destaque”, a home exibe todos os veículos até que um filtro seja aplicado.
-- Contato → Lead → Agendamento: envio do formulário de contato sempre cria um Lead; se marcar test-drive com data/hora, cria também um Agendamento “pendente”.
-- Admin Leads: filtro por status (Todos/Abertos/Concluídos), coluna “Status” separada, ações de Concluir/Excluir, criar Agendamento de Test-Drive a partir do lead e botão “Ver Agendamento” quando houver vínculo; toasts de sucesso/erro e toast clicável para abrir a Agenda.
-- Admin Agendamentos: layout dedicado, filtros (tipo/status/prioridade/período), ações com botões icônicos (confirmar/cancelar/editar/excluir), badges de status, exclusão (DELETE) e CSS isolado em `css/admin-agenda.css`.
-## 🗂️ Estrutura de pastas
-## ✨ Recursos implementados
+---
+
+## 🗂️ Estrutura de pastas (resumo)
+
 ```
 .
+├── admin.html
+├── index.html
+├── login.html
 ├── css/
 │   ├── style.css
-│   └── admin.css
+│   ├── admin.css
+│   └── admin-agenda.css
 ├── js/
-│   ├── catalog.js, card.js, sidepanel.js
-│   ├── contact.js, details.js, gallery.js, sobre.js
-│       ├── produtos.js (legado/auxiliar)
-│       ├── leads.js, agendamentos.js
-│       └── navigation.js (se aplicável)
-		├── .env.example (variáveis de exemplo)
-				├── index.js (boot do Express + CORS + Mongo)
-				├── middleware/auth.js (JWT)
-				├── models/
-				│   ├── Veiculo.js
-						├── leads.routes.js
+│   ├── main.js, navbar.js, logo.js, footer.js
+│   ├── catalog.js, card.js, sidepanel.js, details.js, gallery.js, sobre.js
+│   ├── contact.js, config.js
+│   └── admin/
+│       ├── admin.js, adminNavbar.js, adminViews.js, ui.js
+│       ├── leads.js, agendamentos.js, usuarios.js, produtos.js
+└── server/
+    ├── package.json
+    └── src/
+        ├── index.js
+        ├── middleware/auth.js
+        ├── models/ (Veiculo.js, Lead.js, Agendamento.js, User.js)
+        └── routes/ (veiculos.routes.js, leads.routes.js, agendamentos.routes.js, users.routes.js, auth.routes.js)
 ```
 
+---
 
 ## ✨ Recursos implementados
+
 ### Público
-- Catálogo de veículos a partir da API (sem mock)
-- Filtro por marca (dinâmico)
-	- Imagem com lazy-loading, tamanho fixo e object-fit
-	- Descrição com 2 linhas (clamp)
-	- CTA “Mais informações” abre painel lateral
-- Painel lateral (detalhe) com imagem principal (URL ou GridFS) e simulação de financiamento
-- Contato e Agendamento (POST público para a API)
+- Catálogo de veículos a partir da API
+  - Lazy-loading, object-fit e clamp de descrição
+  - CTA “Mais informações” abre o painel lateral
+- Painel lateral (side panel)
+  - Carrossel de fotos com setas translúcidas (clique abre em nova aba)
+  - Simulador simples de financiamento
+- Contato e Agendamento (POST público)
 
 ### Admin (JWT)
-- Login e guarda de sessão/token
-- CRUD de veículos (create/list/read/update/delete)
-	- Upload de múltiplas imagens (até 20MB cada) com compressão via Sharp (WebP)
-	- Imagens por URL (adicional ou alternativa ao upload)
-	- Marcar/alterar imagem principal e remover imagens
-- Leads: listagem (protegida)
-- Agendamentos: listagem e atualização de status (PATCH protegido)
+- Login único (`login.html`) com redirecionamento por papel
+- CRUD de veículos (upload múltiplo, imagem principal, URL externas, remoção)
+- Leads: filtro por status, ações (WhatsApp/Concluir/Excluir/Agendar Test-Drive) e “Ver Agendamento”
+- Agendamentos: filtros (tipo/status/prioridade/período/vínculo), badges, confirmar/cancelar/editar/excluir, foco via hash
+- Minha conta: dropdown com “Editar perfil” (PATCH /auth/me), “Alterar senha” (POST /auth/change-password) e “Sair”
+- Usuários: lista/criação/alteração de papéis (adminMaster)
+
+---
+
+## 👥 Papéis e contas
+
+- user: acesso público (sem Admin)
+- admin: acesso ao Admin (Veículos/Leads/Agendamentos/Relatórios)
+- adminMaster: tudo do admin + gestão de usuários e papéis
+
+Importante: Contas administrativas são gerenciadas internamente. Não há credenciais públicas nem instruções de criação/promocão documentadas aqui.
+
+---
+
+## 🔄 Fluxo Contato → Lead → Agendamento
+
+Público (`js/contact.js`)
+- Envio do formulário cria sempre um Lead
+- Se marcar test-drive com data/hora, cria também um Agendamento “pendente” com prioridade “amarelo” e `leadId` (vincula ao Lead)
+- O backend atualiza `lead.agendamentoId` no mesmo momento
+
+Admin → Leads (`js/admin/leads.js`)
+- Filtro por status (Todos/Abertos/Concluídos)
+- Ações: WhatsApp, Concluir, Excluir, Agendar Test-Drive
+- Ao agendar, o Lead recebe `agendamentoId`, e aparece “Ver Agendamento”
+- Suporte a foco via hash `#admin-agendamentos?focus=<AG_ID>`
+
+Admin → Agendamentos (`js/admin/agendamentos.js`)
+- Filtros: tipo, status, prioridade, período (7/30 dias) e “Vínculo” (Com/Sem Lead)
+- Populate de `leadId` (nome/email/telefone)
+- Badge “Lead” + link “Ver Lead” → navega com `#admin-leads?focus=<LEAD_ID>`
+- Ações por linha: Confirmar/Cancelar (PATCH status), Editar (PATCH), Excluir (DELETE)
 
 ---
 
@@ -96,134 +129,127 @@ Novidades recentes
 ### Veiculo
 ```js
 {
-	marca: String!, modelo: String!, ano: Number!, preco: Number!,
-	cor?: String, carroceria?: String, km?: Number,
-	descricaoCurta?: String, descricao?: String,
-	imagens: [{ fileId?: String, url?: String, principal?: Boolean }],
-	createdAt, updatedAt
+  marca: String!, modelo: String!, ano: Number!, preco: Number!,
+  cor?: String, carroceria?: String, km?: Number,
+  descricaoCurta?: String, descricao?: String,
+  imagens: [{ fileId?: String, url?: String, principal?: Boolean }],
+  createdAt, updatedAt
 }
 ```
 
 ### Lead
 ```js
 {
-	nome: String!,
-	email: String!,
-	telefone?: String,
-	mensagem?: String,
-	origem: 'contato'|'veiculo'|'outro',
-	interesseTestDrive?: Boolean,  
-	agendamentoId?: ObjectId,        // vínculo quando o agendamento é criado a partir do Lead
-	createdAt, updatedAt
+  nome: String!, email: String!, telefone?: String,
+  mensagem?: String, origem: 'contato'|'veiculo'|'outro',
+  interesseTestDrive?: Boolean,
+  agendamentoId?: ObjectId,   // vínculo quando o agendamento nasce do Lead
+  createdAt, updatedAt
 }
 ```
 
+### Agendamento
 ```js
 {
-	nome: String!,
-	telefone?: String,
-	titulo?: String,
-	tipo?: 'test-drive'|'vistoria'|'evento'|'outro',
-	prioridade?: 'azul'|'amarelo'|'vermelho',
-	status: 'pendente'|'confirmado'|'cancelado',
-	origem: 'publico'|'admin',
+  nome?: String, email?: String, telefone?: String,
+  titulo?: String,
+  tipo: 'test-drive'|'vistoria'|'evento'|'outro',
+  prioridade: 'azul'|'amarelo'|'vermelho',
+  notas?: String,
+  veiculoId?: ObjectId,      // opcional
+  leadId?: ObjectId,         // vínculo com Lead (populate)
+  dataHora: Date!,
+  status: 'pendente'|'confirmado'|'cancelado',
+  origem: 'publico'|'admin',
+  createdAt, updatedAt
+}
+```
+
+### User
+```js
+{ nome: String!, email: String! (unique), senhaHash: String!, role: 'user'|'admin'|'adminMaster' }
+```
 
 ---
 
 ## 🔌 API (referência)
 
-Base: `http://localhost:4000/api` (dev) ou `https://SUA-API/api` (prod)
+Base: `http://localhost:4000/api` (dev) | `https://SUA-API/api` (prod)
 
-Autenticação
-- POST `/auth/login` → `{ token, user }` (admin simulado)
-	- Defina as credenciais de admin no seu ambiente e não publique usuários/senhas em documentação.
-- GET `/veiculos/:id` → item
-- POST `/veiculos` (admin, multipart) → cria
-- PUT `/veiculos/:id` (admin, multipart/JSON) → atualiza
-- DELETE `/veiculos/:id` (admin) → apaga
+### Auth
+- POST `/auth/login` e `/auth/signin` → `{ token, user }`
+- POST `/auth/change-password` (JWT) → { ok: true }
+- PATCH `/auth/me` (JWT) → atualiza `nome` do usuário do banco
 
-- POST `/leads` → cria (público)
-- GET `/leads` (admin) → lista
-- POST `/agendamentos` → cria (público)
-- GET `/agendamentos` (admin) → lista
-- PATCH `/agendamentos/:id/status` (admin) → `{ status }`
-- PATCH `/agendamentos/:id` (admin) → editar dados do agendamento
-- DELETE `/agendamentos/:id` (admin) → remover agendamento
+### Users (adminMaster)
+- GET `/users` (admin|adminMaster)
+- POST `/users` (adminMaster) → cria usuário (role padrão: user)
+- PATCH `/users/:id/role` (adminMaster) → promover/demover papéis
+  (Todas as operações acima são restritas à equipe autorizada.)
+
+### Veículos
+- GET `/veiculos` | GET `/veiculos/:id`
+- POST `/veiculos` (JWT) — multipart (upload) e/ou `imagemUrl`/`imagensUrls`
+- PUT `/veiculos/:id` (JWT) — multipart ou JSON (quando sem imagens)
+- DELETE `/veiculos/:id` (JWT)
+
+### Leads
+- POST `/leads` (público)
+- GET `/leads` (JWT)
+- PATCH `/leads/:id` (JWT) — atualização geral (ex.: `agendamentoId`)
+- PATCH `/leads/:id/status` (JWT) — `aberto|concluido`
+- DELETE `/leads/:id` (JWT)
+
+### Agendamentos
+- POST `/agendamentos` (público) — aceita `leadId`, salva e reflete em `lead.agendamentoId`
+- POST `/agendamentos/admin` (JWT) — cria com `origem='admin'` (pode vir de Lead)
+- GET `/agendamentos` (JWT) — ordenado, com `populate('leadId','nome email telefone')`
+- GET `/agendamentos/:id` (JWT)
+- PATCH `/agendamentos/:id/status` (JWT)
+- PATCH `/agendamentos/:id` (JWT) — edita campos permitidos (inclui `leadId`)
+- DELETE `/agendamentos/:id` (JWT)
 
 ---
 
-
-### Contato → Lead → (opcional) Agendamento
-Frontend (`js/contact.js`)
-
-Admin → Leads (`js/admin/leads.js`, `js/admin/adminViews.js`)
-- A tabela de leads exibe colunas Nome, Email, Telefone, Mensagem, Interesse, Ações.
-- Em “Interesse”, aparece uma badge “Contato” ou “Test-drive • data/hora”. É possível filtrar por status (Todos/Abertos/Concluídos).
-- Em “Ações”, tem:
-	- “WhatsApp” com link pré-preenchido,
-	- “✓” Concluir contato (status=concluido),
-	- “🗑️” Excluir contato,
-	- “🗓️” Agendar Test-Drive (quando houver interesse); ao criar, o `agendamentoId` é salvo no Lead,
-	- “Ver Agendamento” aparece quando o `agendamentoId` está presente.
-	- usando `buildWhatsAppLink`.
-
-Admin → Agendamentos (`js/admin/agendamentos.js`, `css/admin-agenda.css`)
-- Filtros: tipo, status, prioridade e período (7/30 dias).
-- Tabela com status em badges e ações por linha:
-	- Confirmar/Cancelar (PATCH status),
-	- Editar (PATCH dados),
-	- Excluir (DELETE),
-	- Ícones com tooltips e acessibilidade.
-- Layout responsivo e estilos isolados em `css/admin-agenda.css` para não interferir em outras telas.
-
-### Catálogo — fallback de destaque
-
-### Página “Sobre”
-- Seções parallax (hero, citação e CTA), métrica, cards (Missão/Valores/Diferenciais/Compromisso) e timeline.
-- Estilos em `css/style.css` com imagens substituíveis via `background-image` (URLs de exemplo do Unsplash). Basta trocar pelas suas imagens.
-
 ## 🖼️ Imagens — upload e URL
 
-- Upload: Multer (em memória) + Sharp converte para WebP (quality 80) e redimensiona para até 1600x1600.
-- Armazenamento: GridFS (`uploads.files`/`uploads.chunks`)
-- URL: é possível adicionar imagens por URL (não passam pelo GridFS). A principal pode ser `fileId` (GridFS) ou `url`.
-- Limite de tamanho (upload): 20MB por arquivo.
+- Upload: Multer (memory) + Sharp → WebP (quality 80) até 1600x1600
+- Storage: GridFS (`uploads.files`/`uploads.chunks`)
+- URL: adicionar imagens externas (sem passar pelo GridFS)
+- Limite: 20MB por arquivo
 
 ---
 
 ## 🔐 Segurança e CORS
 
-- JWT nas rotas admin (middleware `verifyToken` e `requireAdmin`)
-- Helmet + Rate Limit (120 req/min) + morgan (logs)
-- CORS flexível (`server/src/index.js`):
-	- Localhost/127.0.0.1 em qualquer porta (dev)
-	- Origens sem header (curl/file) e `null`
-- Render/Railway (API): defina `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `CORS_ORIGIN` nas Settings do serviço.
-- Vercel (frontend): não precisa de segredos; se quiser forçar API, use `<meta name="api-base">` ou `window.__API_BASE__`.
+- JWT nas rotas protegidas (`verifyToken`, `requireAdmin`/`requireAdminMaster`)
+- Helmet + Rate Limit (120 req/min) + morgan
+- CORS dinâmico (`src/index.js`):
+  - Libera localhost/127.0.0.1 (dev), origens `null`/sem header, e `*.vercel.app`
+  - Use `CORS_ORIGIN` (se necessário) para whitelists adicionais
 
+---
 
 ## 🛠️ Configuração e execução (dev)
 
-Pré-requisitos
-- Node.js 18+
-- Conta/cluster MongoDB Atlas (ou Mongo local)
+Pré-requisitos: Node.js 18+, MongoDB Atlas (ou local)
 
 1) API
 ```powershell
 cd server
 npm install
 copy .env.example .env   # crie e edite suas variáveis
-npm run dev               # inicia em http://localhost:4000
+npm run dev              # http://localhost:4000
 ```
 
 2) Frontend (estático)
-- Abra `index.html` via um servidor estático (ex.: Live Server no VS Code)
+- Abra `index.html` com um servidor estático (Live Server, etc.)
 - Ou:
 ```powershell
 npx serve .
 ```
 
-Variáveis (.env do servidor)
+Exemplo de `.env` (servidor)
 ```
 PORT=4000
 MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/reliquias?retryWrites=true&w=majority
@@ -237,49 +263,34 @@ CORS_ORIGIN=http://localhost:5500,http://127.0.0.1:5500,https://reliquias.vercel
 ## 🚀 Deploy
 
 ### Frontend (Vercel)
-1. Conecte o repositório no Vercel (projeto estático)
-2. Opcional (definir API pública):
-		 ```html
-		 <meta name="api-base" content="https://SUA-API/api">
-		 ```
-		 ```html
-		 <script>window.__API_BASE__ = 'https://SUA-API/api'</script>
-		 ```js
-		 localStorage.setItem('API_BASE', 'https://SUA-API/api')
+1. Conecte o repositório (projeto estático)
+2. (Opcional) Forçar API explícita:
+   - `<meta name="api-base" content="https://SUA-API/api">`
+   - `<script>window.__API_BASE__='https://SUA-API/api'</script>`
 
-### API (Render/Railway) — recomendado
-2. Build: `npm install` | Start: `npm start`
-3. Env vars: `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN=8h`, `CORS_ORIGIN=https://reliquias.vercel.app,https://*.vercel.app`
-> Observação: a Vercel para serverless tem limite de upload (~5MB por request), por isso preferimos um host “sempre ligado” para a API que processa imagens (Sharp). 
+### API (Render/Railway)
+- Build: `npm install` | Start: `npm start`
+- Env vars: `MONGODB_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN=8h`, `CORS_ORIGIN=https://reliquias.vercel.app,https://*.vercel.app`
+
+Observação: Vercel serverless limita uploads (~5MB). Prefira host “sempre ligado” para processar imagens (Sharp).
+
 ---
 
-1. `window.__API_BASE__`
-3. `<meta name="api-base">`
-4. Fallback: `http://localhost:4000/api` (dev) ou `/api` (prod)
+## ⚙️ Frontend: API_BASE e WhatsApp
 
-O botão “Agendar Test-Drive” do painel lateral abre o WhatsApp da concessionária com mensagem pré-preenchida.
+API base dinâmica (qualquer uma destas):
+1. `window.__API_BASE__ = 'https://SUA-API/api'`
+2. `<meta name="api-base" content="https://SUA-API/api">`
+3. Fallback: `http://localhost:4000/api` (dev)
 
-Número do WhatsApp (configuração no frontend):
-1. Janela (inline):
-	<script>window.__WHATSAPP_NUMBER__ = '99999999'</script>
-	```
-	<meta name="whatsapp-number" content="99999999" />
-3. localStorage (no console do navegador):
-	```js
-	localStorage.setItem('WHATSAPP_NUMBER', '99999999')
-	```
+WhatsApp
+- `window.__WHATSAPP_NUMBER__ = '5511999999999'` ou `<meta name="whatsapp-number" content="5511999999999">`
+- `js/config.js` expõe `WHATSAPP_NUMBER` e `buildWhatsAppLink`
+- Side Panel e Admin Leads usam esse número
 
-Formato: apenas dígitos com DDI (ex.: 55 + DDD + número). Ex.: 5511999999999. Usei 99999999 aqui apenas como exemplo.
-
-Implementação:
-- `js/config.js`: `WHATSAPP_NUMBER` e `buildWhatsAppLink(message, number?)`
-- `js/sidepanel.js`: usa `buildWhatsAppLink` no botão “Agendar Test-Drive” e no link “Falar no WhatsApp”.
-- Admin Leads (`js/admin/leads.js`): usa `buildWhatsAppLink` para contatar o cliente que enviou o formulário de contato, com mensagem padrão contendo nome e motivo.
-
-### Toasts no Admin e Navegação com Foco
-- Utilitário: `js/admin/ui.js` → `showToast(message, type='info', options?)`.
-- Tipos de toast: `success`, `error`, `info`.
-- Navegação pelo toast: passe `options.link` (ex.: `#admin-agendamentos?focus=<id>`). A Agenda, ao abrir com esse hash, faz scroll até a linha com aquele id e destaca por ~2 segundos.
+Toasts e Navegação com Foco
+- `js/admin/ui.js` → `showToast(msg, type, { link })`
+- Links como `#admin-agendamentos?focus=<AG_ID>` ou `#admin-leads?focus=<LEAD_ID>` fazem scroll + destaque
 
 ---
 
@@ -290,35 +301,22 @@ Health
 curl http://localhost:4000/api/health
 ```
 
-Listar veículos
+Login (JWT)
 ```powershell
-curl http://localhost:4000/api/veiculos
+curl -X POST http://localhost:4000/api/auth/login ^
+  -H "Content-Type: application/json" ^
+  -d '{"email":"<EMAIL>","senha":"<SENHA>"}'
 ```
 
-Login admin (JWT)
+Criar Lead + Agendamento público (resumido)
 ```powershell
-curl -X POST http://localhost:4000/api/auth/login -H "Content-Type: application/json" -d '{"email":"<ADMIN_EMAIL>","senha":"<ADMIN_SENHA>"}'
+curl -X POST http://localhost:4000/api/leads -H "Content-Type: application/json" ^
+  -d '{"nome":"João","email":"joao@ex.com","interesseTestDrive":true}'
 ```
 
-Atualizar Lead (vincular agendamento criado)
-```powershell
-curl -X PATCH http://localhost:4000/api/leads/<LEAD_ID> ^
-	-H "Authorization: Bearer <TOKEN>" ^
-	-H "Content-Type: application/json" ^
-	-d '{"agendamentoId":"<AG_ID>"}'
-```
-
-Abrir Agenda com foco (via hash na URL do Admin)
+Abrir Agenda com foco
 ```
 admin.html#admin-agendamentos?focus=<AG_ID>
-```
-
-Criar veículo (URL de imagem)
-```powershell
-curl -X POST http://localhost:4000/api/veiculos ^
-	-H "Authorization: Bearer <TOKEN>" ^
-	-F marca=Toyota -F modelo=Corolla -F ano=2017 -F preco=100000 ^
-	-F imagemUrl=https://exemplo.com/foto.jpg
 ```
 
 ---
@@ -326,21 +324,20 @@ curl -X POST http://localhost:4000/api/veiculos ^
 ## 🧯 Troubleshooting
 
 1) “Not allowed by CORS”
-- Confirme `CORS_ORIGIN` inclui seu domínio (Vercel) e ambientes locais.
+- Confirme `CORS_ORIGIN` inclui seus domínios (Vercel) e ambientes locais.
 
 2) Login falha em produção
-- Verifique se o frontend está apontando para a API correta (API_BASE dinâmica).
-- Rode no console do site: `localStorage.setItem('API_BASE','https://SUA-API/api')`
+- Verifique `API_BASE` no frontend; ajuste via `<meta>`/`window.__API_BASE__`.
 
 3) Upload falha (413/Failed to fetch)
-- Tamanho > 20MB? Reduza a imagem. Render/Railway funcionam; Vercel serverless bloqueia uploads grandes.
+- Arquivo > 20MB? Reduza a imagem. Prefira host “sempre ligado”.
 
 4) MongoDB não conecta
-- Verifique `MONGODB_URI` e IP Access List no Atlas. O log do serviço indicará “MongoDB conectado”.
+- Cheque `MONGODB_URI` e a IP Access List do Atlas.
 
-5) Imagem não aparece
-- Se a imagem é por URL: verifique se a URL é acessível publicamente (CORS da origem e HTTPS).
-- Se é por GridFS: verifique o `fileId` e o endpoint `/veiculos/imagem/:fileId`.
+5) Imagens não aparecem
+- URL externa: verifique CORS/HTTPS da origem
+- GridFS: confirme `fileId` e `/veiculos/imagem/:fileId`
 
 ---
 
@@ -348,27 +345,26 @@ curl -X POST http://localhost:4000/api/veiculos ^
 
 - Altura da imagem no card: `css/style.css` → `.card-img { height: 160px; }`
 - Largura do card: `.card-carro { max-width: 360px; }`
-- Linhas de descrição: `.descricao { line-clamp: 2; -webkit-line-clamp: 2; }`
+- Linhas de descrição: `.descricao { -webkit-line-clamp: 2; line-clamp: 2; }`
 
 ---
 
 ## 📝 Convenções de commit
 
-Recomendado: Conventional Commits
+Conventional Commits
 - `feat: ...` novas funcionalidades
 - `fix: ...` correções
 - `chore: ...` manutenção/infra
 - `refactor: ...` melhorias internas
 
-Sugestão recente:
-> `feat: cards padronizados, imagem por URL e CORS Vercel`
+Ex.: `feat: vínculo Lead↔Agenda e carrossel no Side Panel`
 
 ---
 
 ## ⚠️ Notas de segurança
 
-- Não versione `server/.env` (já no `.gitignore`). Use `server/.env.example` como referência.
-- Troque as credenciais de admin simuladas por um mecanismo real (ou mova usuário/senha para variáveis de ambiente e/ou banco).
+- Não versione `server/.env` (use `server/.env.example`)
+- Não publique segredos (JWT, senhas). Use variáveis de ambiente e contas reais (evite o admin “hardcoded” em produção)
 
 ---
 

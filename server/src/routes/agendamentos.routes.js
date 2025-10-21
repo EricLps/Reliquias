@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import Agendamento from '../models/Agendamento.js';
+import Lead from '../models/Lead.js';
 import { verifyToken, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
@@ -9,6 +10,10 @@ router.post('/', async (req, res) => {
   try {
     const payload = { ...req.body, origem: 'publico' };
     const ag = await Agendamento.create(payload);
+    // Se vier leadId, tentar vincular o agendamento ao lead (agendamentoId no Lead)
+    if (payload.leadId) {
+      try { await Lead.findByIdAndUpdate(payload.leadId, { agendamentoId: ag._id }); } catch (_) {}
+    }
     res.status(201).json(ag);
   } catch (err) {
     console.error(err);
@@ -30,14 +35,16 @@ router.post('/admin', verifyToken, requireAdmin, async (req, res) => {
 
 router.get('/', verifyToken, requireAdmin, async (_req, res) => {
   // Ordena por data futura mais próxima; depois por prioridade e criação
-  const lista = await Agendamento.find().sort({ dataHora: 1, prioridade: 1, createdAt: 1 });
+  const lista = await Agendamento.find()
+    .populate('leadId', 'nome email telefone')
+    .sort({ dataHora: 1, prioridade: 1, createdAt: 1 });
   res.json(lista);
 });
 
 // Obter um agendamento específico (diagnóstico)
 router.get('/:id', verifyToken, requireAdmin, async (req, res) => {
   try {
-    const ag = await Agendamento.findById(req.params.id);
+    const ag = await Agendamento.findById(req.params.id).populate('leadId', 'nome email telefone');
     if (!ag) return res.status(404).json({ error: 'Não encontrado' });
     res.json(ag);
   } catch (err) {
@@ -64,7 +71,7 @@ router.patch('/:id/status', verifyToken, requireAdmin, async (req, res) => {
 // Atualização geral (admin): editar dados do agendamento/evento
 router.patch('/:id', verifyToken, requireAdmin, async (req, res) => {
   try {
-    const fields = ['nome','email','telefone','titulo','tipo','prioridade','notas','veiculoId','dataHora','status'];
+    const fields = ['nome','email','telefone','titulo','tipo','prioridade','notas','veiculoId','leadId','dataHora','status'];
     const updates = {};
     for (const f of fields) if (req.body[f] !== undefined) updates[f] = req.body[f];
     const ag = await Agendamento.findByIdAndUpdate(req.params.id, updates, { new: true });

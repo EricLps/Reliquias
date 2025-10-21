@@ -2,6 +2,7 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
+import { verifyToken } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -35,5 +36,41 @@ async function handleLogin(req, res) {
 // Endpoints equivalentes para contornar bloqueios de extensões de navegador
 router.post('/login', handleLogin);
 router.post('/signin', handleLogin);
+
+// Troca de senha (somente usuários do banco)
+router.post('/change-password', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user?.sub;
+    const { senhaAtual, novaSenha } = req.body || {};
+    if (!senhaAtual || !novaSenha) return res.status(400).json({ error: 'senhaAtual e novaSenha são obrigatórios' });
+    // Admin hardcoded não pode trocar por aqui
+    if (!userId || String(userId).startsWith('admin')) return res.status(400).json({ error: 'Somente usuários do banco podem trocar a senha' });
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+    const ok = bcrypt.compareSync(senhaAtual, user.senhaHash);
+    if (!ok) return res.status(400).json({ error: 'Senha atual inválida' });
+    user.senhaHash = bcrypt.hashSync(novaSenha, 10);
+    await user.save();
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao trocar senha' });
+  }
+});
+
+// Atualizar perfil (nome) — somente usuários do banco
+router.patch('/me', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user?.sub;
+    const { nome } = req.body || {};
+    if (!nome || String(nome).trim().length < 2) return res.status(400).json({ error: 'Nome inválido' });
+    // Admin hardcoded não pode alterar
+    if (!userId || String(userId).startsWith('admin')) return res.status(400).json({ error: 'Somente usuários do banco podem alterar o perfil' });
+    const user = await User.findByIdAndUpdate(userId, { nome: String(nome).trim() }, { new: true, projection: { senhaHash: 0 } });
+    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao atualizar perfil' });
+  }
+});
 
 export default router;

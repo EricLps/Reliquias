@@ -14,6 +14,36 @@
   <main id="admin-content">
     <!-- Conteúdo-->
   </main>
+  <!-- Modal Alterar Senha -->
+  <div id="modal-change-pass" class="modal" style="display:none;position:fixed;inset:0;background:rgba(15,39,71,.45);align-items:center;justify-content:center;z-index:50;">
+    <div style="background:#fff;border-radius:12px;min-width:320px;max-width:420px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.25);">
+      <h3 style="margin:.25rem 0 1rem 0;color:#0f2747;">Alterar senha</h3>
+      <form id="form-change-pass" style="display:flex;flex-direction:column;gap:.75rem;">
+        <input type="password" name="senhaAtual" placeholder="Senha atual" required style="padding:.7rem;border:1px solid #cbd5e1;border-radius:8px;">
+        <input type="password" name="novaSenha" placeholder="Nova senha" required style="padding:.7rem;border:1px solid #cbd5e1;border-radius:8px;">
+        <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+          <button type="button" id="cancel-change-pass" class="btn-secondary" style="padding:.6rem .9rem;">Cancelar</button>
+          <button type="submit" class="botao-comprar" style="padding:.6rem .9rem;">Salvar</button>
+        </div>
+        <div id="change-pass-feedback" style="font-size:.9rem;color:#64748b;"></div>
+      </form>
+    </div>
+  </div>
+  <!-- Modal Editar Perfil -->
+  <div id="modal-edit-profile" class="modal" style="display:none;position:fixed;inset:0;background:rgba(15,39,71,.45);align-items:center;justify-content:center;z-index:50;">
+    <div style="background:#fff;border-radius:12px;min-width:320px;max-width:420px;padding:1rem;box-shadow:0 10px 30px rgba(0,0,0,.25);">
+      <h3 style="margin:.25rem 0 1rem 0;color:#0f2747;">Editar perfil</h3>
+      <form id="form-edit-profile" style="display:flex;flex-direction:column;gap:.75rem;">
+        <input type="text" name="nome" placeholder="Seu nome" required style="padding:.7rem;border:1px solid #cbd5e1;border-radius:8px;">
+        <div style="font-size:.9rem;color:#64748b;" id="edit-profile-email"></div>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end;">
+          <button type="button" id="cancel-edit-profile" class="btn-secondary" style="padding:.6rem .9rem;">Cancelar</button>
+          <button type="submit" class="botao-comprar" style="padding:.6rem .9rem;">Salvar</button>
+        </div>
+        <div id="edit-profile-feedback" style="font-size:.9rem;color:#64748b;"></div>
+      </form>
+    </div>
+  </div>
   <script type="module">
     import { renderAdminNavbar } from './js/admin/adminNavbar.js';
     document.body.insertAdjacentHTML('afterbegin', renderAdminNavbar());
