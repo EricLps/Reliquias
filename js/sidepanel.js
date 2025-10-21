@@ -1,4 +1,5 @@
 import { API_BASE, WHATSAPP_NUMBER, buildWhatsAppLink } from './config.js';
+let __spLastFocused = null;
 
 async function fetchVeiculo(id) {
   const resp = await fetch(`${API_BASE}/veiculos/${id}`);
@@ -7,12 +8,16 @@ async function fetchVeiculo(id) {
 }
 
 export async function openSidePanel(carId) {
+  // guarda o foco atual para devolver após fechar
+  try { __spLastFocused = document.activeElement; } catch(_) { __spLastFocused = null; }
   let panel = document.getElementById('side-panel');
   let overlay = document.getElementById('side-panel-overlay');
   if (!panel) {
     panel = document.createElement('aside');
     panel.id = 'side-panel';
     panel.className = 'side-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true');
     document.body.appendChild(panel);
   }
   if (!overlay) {
@@ -75,8 +80,16 @@ export async function openSidePanel(carId) {
   }, 10);
   document.body.style.overflow = 'hidden';
 
-  panel.querySelector('.side-panel-close').onclick = closeSidePanel;
+  const closeBtn = panel.querySelector('.side-panel-close');
+  panel.setAttribute('aria-label', `${car.marca} ${car.modelo}`);
+  closeBtn.onclick = closeSidePanel;
   overlay.onclick = closeSidePanel;
+  // Fecha com Esc
+  const escHandler = (e) => { if (e.key === 'Escape') closeSidePanel(); };
+  document.addEventListener('keydown', escHandler, { once: true });
+  // Foco inicial no título para leitores de tela
+  const headerH3 = panel.querySelector('.side-panel-header h3');
+  if (headerH3) headerH3.setAttribute('tabindex','-1'), headerH3.focus();
 
   // Navegação da galeria
   const mainImg = panel.querySelector('#sp-main-img');
@@ -97,6 +110,39 @@ export async function openSidePanel(carId) {
   if (imgs.length < 2) {
     if (btnPrev) btnPrev.style.display = 'none';
     if (btnNext) btnNext.style.display = 'none';
+  }
+
+  // Gestos de deslizar (mobile) para navegar/fechar
+  let touchStartX = null, touchCurrentX = null, swiping = false;
+  const onTouchStart = (e) => {
+    if (!e.touches || e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchCurrentX = touchStartX;
+    swiping = true;
+  };
+  const onTouchMove = (e) => {
+    if (!swiping) return;
+    touchCurrentX = e.touches[0].clientX;
+  };
+  const onTouchEnd = () => {
+    if (!swiping) return;
+    const dx = touchCurrentX - touchStartX;
+    swiping = false;
+    // limiar ~60px
+    if (Math.abs(dx) > 60) {
+      if (dx > 0) { // swipe direita → imagem anterior ou fechar se início
+        if (imgs.length > 1) { if (btnPrev) btnPrev.click(); }
+        else closeSidePanel();
+      } else { // esquerda → próxima
+        if (imgs.length > 1) { if (btnNext) btnNext.click(); }
+      }
+    }
+  };
+  const spMain = panel.querySelector('.sp-main');
+  if (spMain) {
+    spMain.addEventListener('touchstart', onTouchStart, { passive: true });
+    spMain.addEventListener('touchmove', onTouchMove, { passive: true });
+    spMain.addEventListener('touchend', onTouchEnd, { passive: true });
   }
 
   panel.querySelector('#btn-simular').onclick = () => {
@@ -129,4 +175,8 @@ export function closeSidePanel() {
     setTimeout(() => { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 400);
   }
   document.body.style.overflow = '';
+  // devolve foco ao acionador original (após animação)
+  if (__spLastFocused && typeof __spLastFocused.focus === 'function') {
+    setTimeout(() => { try { __spLastFocused.focus(); } catch(_) {} }, 420);
+  }
 }
