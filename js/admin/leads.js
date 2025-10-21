@@ -46,10 +46,11 @@ async function agendarTestDrive(lead) {
         telefone: lead.telefone,
         titulo: `Test-drive: ${lead.nome}`,
         tipo: 'test-drive',
-        prioridade: 'media',
+        prioridade: 'amarelo',
         dataHora: lead.dataHora || null,
         status: 'pendente',
-        notas: lead.mensagem || ''
+        notas: lead.mensagem || '',
+        leadId: lead._id || undefined
     };
     const resp = await fetch(`${API_BASE}/agendamentos/admin`, {
         method: 'POST',
@@ -101,6 +102,7 @@ export async function renderLeads() {
         tbody.innerHTML = '';
         leads.forEach(lead => {
             const row = document.createElement('tr');
+            if (lead && lead._id) row.setAttribute('data-id', lead._id);
                         const when = lead.dataHora ? new Date(lead.dataHora).toLocaleString('pt-BR') : '';
                         const firstName = (lead.nome || '').trim().split(/\s+/)[0] || '';
                         const motivoMsgRaw = (lead.mensagem || '').trim();
@@ -189,6 +191,23 @@ export async function renderLeads() {
                             });
                         }
         });
+
+        // Se houver ?focus=<LEAD_ID> no hash, rolar e destacar precisamente
+        try {
+            const hash = window.location.hash || '';
+            const m = hash.match(/\?focus=([A-Za-z0-9]+)/);
+            const focusId = m ? m[1] : null;
+            if (focusId) {
+                const row = tbody.querySelector(`tr[data-id='${focusId}']`);
+                if (row) {
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const oldBg = row.style.backgroundColor;
+                    row.style.transition = 'background-color .4s ease';
+                    row.style.backgroundColor = '#fffbeb';
+                    setTimeout(()=>{ row.style.backgroundColor = oldBg || ''; }, 2000);
+                }
+            }
+        } catch {}
 
         // Re-bind do filtro (para recarregar ao mudar)
         const select2 = document.getElementById('leads-filter-status');

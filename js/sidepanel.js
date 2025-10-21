@@ -25,10 +25,13 @@ export async function openSidePanel(carId) {
   try {
     car = await fetchVeiculo(carId);
   } catch (e) { return; }
-  const principal = (car.imagens || []).find(i => i.principal) || (car.imagens || [])[0];
-  const imgUrl = principal?.fileId
-    ? `${API_BASE}/veiculos/imagem/${principal.fileId}`
-    : (principal?.url || car.imagem || 'https://via.placeholder.com/800x450?text=Ve%C3%ADculo');
+  // Monta lista de imagens do veículo
+  const imgs = Array.isArray(car.imagens) && car.imagens.length
+    ? (car.imagens.map(i => i?.url ? i.url : (i?.fileId ? `${API_BASE}/veiculos/imagem/${i.fileId}` : null)).filter(Boolean))
+    : [];
+  if (!imgs.length && car.imagem) imgs.push(car.imagem);
+  if (!imgs.length) imgs.push('https://via.placeholder.com/800x450?text=Ve%C3%ADculo');
+  let idx = Math.max(0, Math.min(imgs.length - 1, Math.max(0, (car.imagens || []).findIndex(i => i?.principal))));
   const metaParts = [];
   if (car.ano) metaParts.push(`Ano: ${car.ano}`);
   if (car.km != null) metaParts.push(`KM: ${Number(car.km).toLocaleString('pt-BR')}`);
@@ -41,7 +44,13 @@ export async function openSidePanel(carId) {
       <button class="side-panel-close" aria-label="Fechar" title="Fechar">&times;</button>
     </div>
     <div class="side-panel-content">
-  <img src="${imgUrl}" alt="${car.marca} ${car.modelo}">
+  <div class="sp-gallery">
+    <div class="sp-main">
+      <img id="sp-main-img" src="${imgs[idx]}" alt="${car.marca} ${car.modelo}">
+      <button class="sp-arrow sp-left" aria-label="Imagem anterior" title="Anterior">&#10094;</button>
+      <button class="sp-arrow sp-right" aria-label="Próxima imagem" title="Próxima">&#10095;</button>
+    </div>
+  </div>
   <div class="car-meta">${metaLine} • R$ ${car.preco.toLocaleString('pt-BR')}</div>
   <div class="car-desc">${car.descricao || car.descricaoCurta || ''}</div>
       <div class="side-panel-simulador">
@@ -68,6 +77,27 @@ export async function openSidePanel(carId) {
 
   panel.querySelector('.side-panel-close').onclick = closeSidePanel;
   overlay.onclick = closeSidePanel;
+
+  // Navegação da galeria
+  const mainImg = panel.querySelector('#sp-main-img');
+  const btnPrev = panel.querySelector('.sp-left');
+  const btnNext = panel.querySelector('.sp-right');
+  const updateImg = () => {
+    if (!mainImg) return;
+    mainImg.style.opacity = '0';
+    setTimeout(() => {
+      mainImg.src = imgs[idx];
+      mainImg.onload = () => { mainImg.style.opacity = '1'; };
+    }, 120);
+  };
+  if (btnPrev) btnPrev.onclick = () => { if (imgs.length < 2) return; idx = (idx - 1 + imgs.length) % imgs.length; updateImg(); };
+  if (btnNext) btnNext.onclick = () => { if (imgs.length < 2) return; idx = (idx + 1) % imgs.length; updateImg(); };
+  if (mainImg) mainImg.onclick = () => { window.open(imgs[idx], '_blank'); };
+  // Esconde setas se não houver múltiplas imagens
+  if (imgs.length < 2) {
+    if (btnPrev) btnPrev.style.display = 'none';
+    if (btnNext) btnNext.style.display = 'none';
+  }
 
   panel.querySelector('#btn-simular').onclick = () => {
     const entrada = parseFloat(panel.querySelector('#valorEntrada').value) || 0;

@@ -60,7 +60,15 @@ function renderIntoMain(html, afterRender) {
 
 function renderAdminPage() {
   if (!ensureAuthenticated()) return;
-  const hash = window.location.hash || '#admin-veiculos';
+  // Normaliza hash para uma das páginas conhecidas
+  let hash = window.location.hash || '#admin-veiculos';
+  const allowed = new Set(['#admin-veiculos','#admin-leads','#admin-agendamentos','#admin-usuarios','#admin-relatorios']);
+  if (!allowed.has(hash)) {
+    // Tenta extrair antes de query (?focus=...)
+    const base = hash.split('?')[0];
+    if (allowed.has(base)) hash = base; else hash = '#admin-veiculos';
+    if (window.location.hash !== hash) window.location.hash = hash;
+  }
   setActiveNav(hash);
   const main = document.getElementById('admin-content');
   if (hash === '#admin-veiculos') {
@@ -92,6 +100,149 @@ document.addEventListener('DOMContentLoaded', () => {
     window.location.hash = '#admin-veiculos';
   }
   renderAdminPage();
+
+  // Wire de Minha conta e Sair
+  const logoutBtn = document.getElementById('admin-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('session');
+      window.location.href = 'login.html';
+    });
+  }
+  const myAccount = document.getElementById('admin-my-account');
+  const menu = document.getElementById('my-account-menu');
+  if (myAccount && menu) {
+    myAccount.addEventListener('click', (e) => {
+      e.preventDefault();
+      const vis = menu.style.display === 'block';
+      menu.style.display = vis ? 'none' : 'block';
+    });
+    document.addEventListener('click', (evt) => {
+      const inside = evt.target === myAccount || myAccount.contains(evt.target) || menu.contains(evt.target);
+      if (!inside) menu.style.display = 'none';
+    });
+  }
+
+  // Preenche resumo da conta no dropdown
+  try {
+    const sessionRaw = localStorage.getItem('session');
+    const session = sessionRaw ? JSON.parse(sessionRaw) : null;
+    const acc = document.getElementById('account-summary');
+    if (acc && session) {
+      const roleLabel = session.role === 'adminMaster' ? 'Admin Master' : (session.role === 'admin' ? 'Admin' : 'Usuário');
+      acc.innerHTML = `
+        <div style="font-weight:600;color:#0f2747;">${session.nome || 'Minha conta'}</div>
+        <div style="font-size:.85rem;color:#475569;">${session.email || ''}</div>
+        <div style="margin-top:.25rem;font-size:.75rem;background:#f1f5f9;color:#0f2747;display:inline-block;padding:.1rem .4rem;border-radius:6px;">${roleLabel}</div>
+      `;
+    }
+  } catch {}
+
+  // Modal alterar senha
+  const modal = document.getElementById('modal-change-pass');
+  const btnChange = document.getElementById('admin-change-pass');
+  const btnCancel = document.getElementById('cancel-change-pass');
+  const formChange = document.getElementById('form-change-pass');
+  if (btnChange && modal) btnChange.addEventListener('click', () => { menu && (menu.style.display='none'); modal.style.display = 'flex'; });
+  if (btnCancel && modal) btnCancel.addEventListener('click', () => { modal.style.display = 'none'; });
+  if (modal) modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none'; });
+  if (formChange) {
+    formChange.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(formChange));
+      const feedback = document.getElementById('change-pass-feedback');
+      feedback.textContent = 'Salvando...';
+      try {
+        const resp = await fetch(`${API_BASE}/auth/change-password`, {
+          method: 'POST',
+          headers: authHeaders({ 'Content-Type': 'application/json', Accept: 'application/json' }),
+          body: JSON.stringify(data)
+        });
+        if (handleAuthFailure(resp)) return;
+        if (!resp.ok) {
+          const j = await resp.json().catch(()=>null);
+          feedback.textContent = j?.error || 'Falha ao alterar senha.';
+          return;
+        }
+        feedback.textContent = 'Senha alterada com sucesso.';
+        setTimeout(()=>{ modal.style.display='none'; formChange.reset();}, 700);
+      } catch (err) {
+        feedback.textContent = 'Erro ao alterar senha.';
+      }
+    });
+  }
+
+  // Modal editar perfil
+  const modalEdit = document.getElementById('modal-edit-profile');
+  const btnEdit = document.getElementById('admin-edit-profile');
+  const btnEditCancel = document.getElementById('cancel-edit-profile');
+  const formEdit = document.getElementById('form-edit-profile');
+  const emailEditEl = document.getElementById('edit-profile-email');
+  if (btnEdit && modalEdit) {
+    btnEdit.addEventListener('click', () => {
+      // Fecha menu e abre modal
+      menu && (menu.style.display='none');
+      try {
+        const sessionRaw = localStorage.getItem('session');
+        const session = sessionRaw ? JSON.parse(sessionRaw) : null;
+        if (session) {
+          const nomeInput = formEdit?.querySelector('input[name="nome"]');
+          if (nomeInput) nomeInput.value = session.nome || '';
+          if (emailEditEl) emailEditEl.textContent = session.email || '';
+        }
+      } catch {}
+      modalEdit.style.display = 'flex';
+    });
+  }
+  if (btnEditCancel && modalEdit) btnEditCancel.addEventListener('click', () => { modalEdit.style.display = 'none'; });
+  if (modalEdit) modalEdit.addEventListener('click', (e)=>{ if(e.target===modalEdit) modalEdit.style.display='none'; });
+  if (formEdit) {
+    formEdit.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(formEdit);
+      const payload = { nome: fd.get('nome') };
+      const feedback = document.getElementById('edit-profile-feedback');
+      if (feedback) feedback.textContent = 'Salvando...';
+      try {
+        const resp = await fetch(`${API_BASE}/auth/me`, {
+          method: 'PATCH',
+          headers: authHeaders({ 'Content-Type': 'application/json', Accept: 'application/json' }),
+          body: JSON.stringify(payload)
+        });
+        if (handleAuthFailure(resp)) return;
+        if (!resp.ok) {
+          const j = await resp.json().catch(()=>null);
+          if (feedback) feedback.textContent = j?.error || 'Falha ao atualizar perfil.';
+          return;
+        }
+        const updated = await resp.json();
+        // Atualiza sessão local
+        try {
+          const sessionRaw = localStorage.getItem('session');
+          const session = sessionRaw ? JSON.parse(sessionRaw) : {};
+          session.nome = updated?.nome || payload.nome;
+          session.email = session.email || updated?.email; // preserva email
+          localStorage.setItem('session', JSON.stringify(session));
+          // Atualiza resumo da conta
+          const acc = document.getElementById('account-summary');
+          if (acc) {
+            const roleLabel = session.role === 'adminMaster' ? 'Admin Master' : (session.role === 'admin' ? 'Admin' : 'Usuário');
+            acc.innerHTML = `
+              <div style="font-weight:600;color:#0f2747;">${session.nome || 'Minha conta'}</div>
+              <div style="font-size:.85rem;color:#475569;">${session.email || ''}</div>
+              <div style="margin-top:.25rem;font-size:.75rem;background:#f1f5f9;color:#0f2747;display:inline-block;padding:.1rem .4rem;border-radius:6px;">${roleLabel}</div>
+            `;
+          }
+        } catch {}
+        if (feedback) feedback.textContent = 'Perfil atualizado.';
+        setTimeout(()=>{ modalEdit.style.display='none'; }, 700);
+      } catch (err) {
+        if (feedback) feedback.textContent = 'Erro ao atualizar perfil.';
+      }
+    });
+  }
 });
 
 window.addEventListener('hashchange', renderAdminPage);

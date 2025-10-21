@@ -11,6 +11,7 @@ function applyFilters(lista, container) {
   const fStatus = container.querySelector('#f-status')?.value || 'all';
   const fPrio = container.querySelector('#f-prio')?.value || 'all';
   const fRange = container.querySelector('#f-range')?.value || 'all';
+  const fLead = container.querySelector('#f-lead')?.value || 'all';
   let out = [...lista];
   if (fTipo !== 'all') out = out.filter(x => (x.tipo || 'outro') === fTipo);
   if (fStatus !== 'all') out = out.filter(x => (x.status || 'pendente') === fStatus);
@@ -21,6 +22,10 @@ function applyFilters(lista, container) {
     if (fRange === '7') end = new Date(now.getTime() + 7*24*60*60*1000);
     if (fRange === '30') end = new Date(now.getTime() + 30*24*60*60*1000);
     if (end) out = out.filter(x => x.dataHora && new Date(x.dataHora) <= end && new Date(x.dataHora) >= now);
+  }
+  if (fLead !== 'all') {
+    if (fLead === 'com') out = out.filter(x => !!x.leadId);
+    if (fLead === 'sem') out = out.filter(x => !x.leadId);
   }
   return out;
 }
@@ -91,7 +96,7 @@ function openEditModal(item, container) {
 }
 
 function bindFilters(container) {
-  ['#f-tipo','#f-status','#f-prio','#f-range'].forEach(sel => {
+  ['#f-tipo','#f-status','#f-prio','#f-range','#f-lead'].forEach(sel => {
     const el = container.querySelector(sel);
     if (el) el.addEventListener('change', () => {
       const tbody = container.querySelector('tbody');
@@ -104,6 +109,7 @@ function bindFilters(container) {
     container.querySelector('#f-status').value = 'all';
     container.querySelector('#f-prio').value = 'all';
     container.querySelector('#f-range').value = 'all';
+    const fl = container.querySelector('#f-lead'); if (fl) fl.value = 'all';
     const tbody = container.querySelector('tbody');
     renderRows(__ag_cache, tbody);
   });
@@ -120,12 +126,16 @@ function renderRows(lista, tbody) {
     const dt = item.dataHora ? new Date(item.dataHora) : null;
     const prioridadeDot = `<span class="ag-dot ag-${item.prioridade || 'azul'}"></span>`;
     const status = item.status || 'pendente';
-    const statusClass = `badge badge-${status}`;
+  const statusClass = `badge badge-${status}`;
+    const leadObj = typeof item.leadId === 'object' ? item.leadId : null;
+    const leadIdVal = leadObj?._id || (typeof item.leadId === 'string' ? item.leadId : null);
+    const leadBadge = item.leadId ? `<div><small class="badge badge-pendente" title="Vinculado a um lead">Lead</small> ${leadObj?.nome ? `• ${leadObj.nome}` : ''} ${leadIdVal?`<a class="btn-ghost" style="margin-left:6px;" href="#admin-leads?focus=${leadIdVal}" title="Abrir Leads">Ver Lead</a>`:''}</div>` : '';
     tr.innerHTML = `
       <td>${dt ? dt.toLocaleString('pt-BR') : ''}</td>
       <td>
         <div><strong>${item.titulo || '(sem título)'}</strong></div>
         <small>${item.tipo || 'outro'}</small>
+        ${leadBadge}
       </td>
       <td>
         <div>${item.nome || ''}</div>

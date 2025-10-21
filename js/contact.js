@@ -40,12 +40,13 @@ export function renderContact(main) {
         interesseTestDrive: !!ckAgendar.checked,
         dataHora: isAgendamento ? data.dataHora : undefined
       };
-      const respLead = await fetch(`${API_BASE}/leads`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(leadPayload) });
-      if (!respLead.ok) throw new Error('Falha ao registrar contato');
+  const respLead = await fetch(`${API_BASE}/leads`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(leadPayload) });
+  if (!respLead.ok) throw new Error('Falha ao registrar contato');
+  const lead = await respLead.json().catch(()=>null);
 
       //se marcar e informar data/hora, cria Agendamento público
       if (isAgendamento) {
-        const agPayload = { nome: data.nome, email: data.email, telefone: data.telefone, dataHora: data.dataHora, status: 'pendente', titulo: `Test-drive de ${data.nome}`, tipo: 'test-drive' };
+        const agPayload = { nome: data.nome, email: data.email, telefone: data.telefone, dataHora: data.dataHora, status: 'pendente', titulo: `Test-drive de ${data.nome}`, tipo: 'test-drive', prioridade: 'amarelo', leadId: lead?._id };
         const respAg = await fetch(`${API_BASE}/agendamentos`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(agPayload) });
         if (!respAg.ok) throw new Error('Falha ao agendar test-drive');
       }
