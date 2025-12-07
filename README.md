@@ -12,23 +12,23 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 
 ## 📚 Sumário
 
-- Visão geral
-- Stack e arquitetura
-- Estrutura de pastas
-- Recursos implementados (Público e Admin)
-- Papéis e contas (user, admin, adminMaster)
-- Fluxo Contato → Lead → Agendamento
-- Modelos de dados (Mongoose)
-- Referência de API (Auth, Users, Veículos, Leads, Agendamentos)
-- Imagens (GridFS + Sharp) e Imagem por URL
-- Segurança (JWT, Helmet, Rate Limit) e CORS
-- Configuração e execução (dev)
-- Deploy (Vercel + Render/Railway)
-- Configuração do Frontend (API_BASE) e WhatsApp
-- Exemplos rápidos (PowerShell/curl)
-- Troubleshooting (erros comuns)
-- Personalização rápida (UI)
-- Convenções de commit
+- [Visão geral](#visão-geral)
+- [Stack e arquitetura](#stack-e-arquitetura)
+- [Estrutura de pastas (resumo)](#estrutura-de-pastas-resumo)
+- [Recursos implementados (Público e Admin)](#recursos-implementados-público-e-admin)
+- [Papéis e contas (user, admin, adminMaster)](#papéis-e-contas-user-admin-adminmaster)
+- [Fluxo Contato → Lead → Agendamento](#fluxo-contato-lead-agendamento)
+- [Modelos de dados (Mongoose)](#modelos-de-dados-mongoose)
+- [Referência de API (Auth, Users, Veículos, Leads, Agendamentos)](#referência-de-api-auth-users-veículos-leads-agendamentos)
+- [Imagens (GridFS + Sharp) e Imagem por URL](#imagens-gridfs-sharp-e-imagem-por-url)
+- [Segurança (JWT, Helmet, Rate Limit) e CORS](#segurança-jwt-helmet-rate-limit-e-cors)
+- [Configuração e execução (dev)](#configuração-e-execução-dev)
+- [Deploy (Vercel + Render/Railway)](#deploy-vercel-render-railway)
+- [Configuração do Frontend (API_BASE) e WhatsApp](#configuração-do-frontend-api_base-e-whatsapp)
+- [Exemplos rápidos (PowerShell/curl)](#exemplos-rápidos-powershellcurl)
+- [Troubleshooting (erros comuns)](#troubleshooting-erros-comuns)
+- [Personalização rápida (UI)](#personalização-rápida-ui)
+- [Convenções de commit](#convenções-de-commit)
 
 ---
 
