@@ -12,24 +12,23 @@ Deploy de referência (frontend): https://reliquias.vercel.app/
 
 ## 📚 Sumário
 
-- [Visão geral](#visão-geral)
-- [Stack e arquitetura](#stack-e-arquitetura)
-- [Estrutura de pastas (resumo)](#estrutura-de-pastas-resumo)
-- [Recursos implementados (Público e Admin)](#recursos-implementados-público-e-admin)
-- [Papéis e contas (user, admin, adminMaster)](#papéis-e-contas-user-admin-adminmaster)
-- [Fluxo Contato → Lead → Agendamento](#fluxo-contato-lead-agendamento)
-- [Modelos de dados (Mongoose)](#modelos-de-dados-mongoose)
-- [Referência de API (Auth, Users, Veículos, Leads, Agendamentos)](#referência-de-api-auth-users-veículos-leads-agendamentos)
-- [Imagens (GridFS + Sharp) e Imagem por URL](#imagens-gridfs-sharp-e-imagem-por-url)
-- [Segurança (JWT, Helmet, Rate Limit) e CORS](#segurança-jwt-helmet-rate-limit-e-cors)
-- [Configuração e execução (dev)](#configuração-e-execução-dev)
-- [Deploy (Vercel + Render/Railway)](#deploy-vercel-render-railway)
-- [Configuração do Frontend (API_BASE) e WhatsApp](#configuração-do-frontend-api_base-e-whatsapp)
-- [Exemplos rápidos (PowerShell/curl)](#exemplos-rápidos-powershellcurl)
-- [Troubleshooting (erros comuns)](#troubleshooting-erros-comuns)
-- [Personalização rápida (UI)](#personalização-rápida-ui)
-- [Convenções de commit](#convenções-de-commit)
-
+- [Visão geral](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#visao-geral)
+- [Stack e arquitetura](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#stack-e-arquitetura)
+- [Estrutura de pastas (resumo)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#estrutura-de-pastas-resumo)
+- [Recursos implementados (Público e Admin)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#recursos-implementados-publico-e-admin)
+- [Papéis e contas (user, admin, adminMaster)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#papeis-e-contas-user-admin-adminmaster)
+- [Fluxo Contato → Lead → Agendamento](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#fluxo-contato-lead-agendamento)
+- [Modelos de dados (Mongoose)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#modelos-de-dados-mongoose)
+- [Referência de API (Auth, Users, Veículos, Leads, Agendamentos)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#referencia-de-api-auth-users-veiculos-leads-agendamentos)
+- [Imagens (GridFS + Sharp) e Imagem por URL](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#imagens-gridfs-sharp-e-imagem-por-url)
+- [Segurança (JWT, Helmet, Rate Limit) e CORS](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#seguranca-jwt-helmet-rate-limit-e-cors)
+- [Configuração e execução (dev)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#configuracao-e-execucao-dev)
+- [Deploy (Vercel + Render/Railway)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#deploy-vercel-render-railway)
+- [Configuração do Frontend (API_BASE) e WhatsApp](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#configuracao-do-frontend-api_base-e-whatsapp)
+- [Exemplos rápidos (PowerShell/curl)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#exemplos-rapidos-powershellcurl)
+- [Troubleshooting (erros comuns)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#troubleshooting-erros-comuns)
+- [Personalização rápida (UI)](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#personalizacao-rapida-ui)
+- [Convenções de commit](https://github.com/EricLps/Reliquias/blob/9e4930a1eba2f20ffaa5bd78859319e4c2288f00/README.md#convencoes-de-commit)
 ---
 
 ## 🔎 Visão geral
